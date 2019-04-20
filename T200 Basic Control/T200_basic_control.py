@@ -61,7 +61,7 @@ try:
         # So, we scale by 100
         throttle_command = speed/100
 
-        print('Current speed: {:+4d}% = {:+4.2f} command'.format(speed, throttle_command))
+        print('  Current speed: {:+4d}% = {:+4.2f} command'.format(speed, throttle_command))
         thruster.throttle(throttle_command)
     
         # Then sleep a short time before looping
@@ -73,7 +73,7 @@ try:
         speed = 100 - speed
         throttle_command = speed/100
 
-        print('Current speed: {:+4d}% = {:+4.2f} command'.format(speed, throttle_command))
+        print('  Current speed: {:+4d}% = {:+4.2f} command'.format(speed, throttle_command))
         thruster.throttle(throttle_command)
     
         # Then sleep a short time before looping
@@ -86,7 +86,7 @@ try:
         # So, we scale by 100
         throttle_command = -speed/100 # Just the negative of the loop above
 
-        print('Current speed: {:+4d}% = {:+4.2f} command'.format(-speed, throttle_command))
+        print('  Current speed: {:+4d}% = {:+4.2f} command'.format(-speed, throttle_command))
         thruster.throttle(throttle_command)
     
         # Then sleep a short time before looping
@@ -98,7 +98,7 @@ try:
         speed = 100 - speed
         throttle_command = -speed/100 # Just the negative of the loop above
 
-        print('Current speed: {:+4d}% = {:+4.2f} command'.format(-speed, throttle_command))
+        print('  Current speed: {:+4d}% = {:+4.2f} command'.format(-speed, throttle_command))
         thruster.throttle(throttle_command)
     
         # Then sleep a short time before looping
