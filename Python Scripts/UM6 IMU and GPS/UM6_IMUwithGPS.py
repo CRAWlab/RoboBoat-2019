@@ -75,7 +75,7 @@ def query_yes_no(question, default="yes"):
 
     while True:
         sys.stdout.write(question + prompt)
-        choice = raw_input().lower()
+        choice = input().lower()
         if default is not None and choice == '':
             return valid[default]
         elif choice in valid:
@@ -288,12 +288,20 @@ class Um6Drv:
 
     def waitData(self, nbytes=1, timeout=1.0):
         while True:
-            self.buf += self.ser.read(self.ser.inWaiting())
+            try:
+                self.buf += self.ser.read(self.ser.inWaiting()).decode('utf-8')
+            except (UnicodeDecodeError):
+                pass # TODO: 04/22/19 - JEV - Why do we get a Unicode Error sometimes?
             if len(self.buf)>=nbytes:
                 return True
+            
             rlist, _, _ = select([ self.ser ], [], [], timeout)
-            if rlist<=0:
-                return False
+            
+#             print(rlist)
+#             
+#             if rlist<=0:
+#                 return False
+            
             # Now sleep for the expected time necessary to receive these bits
             time.sleep(1e-4*(nbytes-len(self.buf)))
 
@@ -327,25 +335,25 @@ class Um6Drv:
     def writePacket(self, pkt):
 
         #header
-        self.ser.write('s')
-        self.ser.write('n')
-        self.ser.write('p')
+        self.ser.write('s'.encode('utf-8'))
+        self.ser.write('n'.encode('utf-8'))
+        self.ser.write('p'.encode('utf-8'))
 
-        chkSum = (self.chToByte("s") +
-                  self.chToByte("n") +
-                  self.chToByte("p"))
+        chkSum = (self.chToByte("s".encode('utf-8')) +
+                  self.chToByte("n".encode('utf-8')) +
+                  self.chToByte("p".encode('utf-8')))
 
         for i in range(0, len(pkt)):
-            self.ser.write(chr(pkt[i]))
-            chkSum += pkt[i]
+            self.ser.write(chr(pkt[i]).encode('utf-8'))
+            chkSum += chr(pkt[i]).encode('utf-8')
 
         strChkSum = ("%s"%(chkSum))
 
         high = (chkSum >> 8) & 0x00FF
         low = 0x00FF & chkSum
 
-        self.ser.write(chr(high))
-        self.ser.write(chr(low))
+        self.ser.write(chr(high).encode('utf-8'))
+        self.ser.write(chr(low).encode('utf-8'))
 
     def readPacket(self):
         if (not self.syncToHeader()):
@@ -569,8 +577,8 @@ class Um6Drv:
 #             self.valid['gps_heading'] = False
 #             self.valid['gps_speed'] = False
 
-            if (self.latitude <> self.last_latitude or 
-                self.longitude <> self.last_longitude):
+            if (self.latitude != self.last_latitude or 
+                self.longitude != self.last_longitude):
                 # Check if moving, if so assign a speed and heading
                 distance_moved = self.calculate_simple_distance(
                                         (self.last_latitude, self.last_longitude),
@@ -643,7 +651,8 @@ class Um6Drv:
 
     def chToByte(self, ch):
         # convert single char string to unsigned byte
-        return struct.unpack("B", ch)[0]
+        #return struct.unpack("B", ch)[0]
+        return ch
         
         
     def calculate_bearing(self,position1, position2):
@@ -853,26 +862,26 @@ class IMU(object):
             print('                    UM6 Data - Combined IMU and GPS                   ')
             print('======================================================================')
             print('')
-            print('Elapsed Time (s)                                            {:10.4f}'.format(self.data['Time']))
+            print(('Elapsed Time (s)                                            {:10.4f}'.format(self.data['Time'])))
             print('')
-            print('IMU Calculated Heading (deg)                                {:10.4f}'.format(self.data['Heading']))
-            print('GPS Calculated Heading (deg)                                {:10.4f}'.format(self.data['DATA_GPS'][2]))
-            print(''       
-            print('Magnometer - X                                              {:10.4f}'.format(self.data['DATA_MAGNETOMETER'][0]))
-            print('Magnometer - Y                                              {:10.4f}'.format(self.data['DATA_MAGNETOMETER'][1]))
-            print('Magnometer - Z                                              {:10.4f}'.format(self.data['DATA_MAGNETOMETER'][2]))
-            print(''       
-            print('Acceleration - X (g)                                        {:10.4f}'.format(self.data['DATA_LINEAR_ACCEL'][0]))
-            print('Acceleration - Y (g)                                        {:10.4f}'.format(self.data['DATA_LINEAR_ACCEL'][1]))
-            print('Acceleration - Z (g)                                        {:10.4f}'.format(self.data['DATA_LINEAR_ACCEL'][2]))
+            print(('IMU Calculated Heading (deg)                                {:10.4f}'.format(self.data['Heading'])))
+            print(('GPS Calculated Heading (deg)                                {:10.4f}'.format(self.data['DATA_GPS'][2])))
             print('')
-            print('Roll  (deg)                                                 {:10.4f}'.format(self.data['DATA_ROLL_PITCH_YAW'][0]))
-            print('Pitch (deg)                                                 {:10.4f}'.format(self.data['DATA_ROLL_PITCH_YAW'][1]))
-            print('Yaw   (deg)                                                 {:10.4f}'.format(self.data['DATA_ROLL_PITCH_YAW'][2]))
+            print(('Magnometer - X                                              {:10.4f}'.format(self.data['DATA_MAGNETOMETER'][0])))
+            print(('Magnometer - Y                                              {:10.4f}'.format(self.data['DATA_MAGNETOMETER'][1])))
+            print(('Magnometer - Z                                              {:10.4f}'.format(self.data['DATA_MAGNETOMETER'][2])))
             print('')
-            print('Latitude (+/- = North/South)                                {:10.4f}'.format(self.data['DATA_GPS'][0]))
-            print('Longitude (+/- = East/West)                                 {:10.4f}'.format(self.data['DATA_GPS'][1]))
-            print('GPS Calculated Speed (m/s)                                  {:10.4f}'.format(self.data['DATA_GPS'][3]))
+            print(('Acceleration - X (g)                                        {:10.4f}'.format(self.data['DATA_LINEAR_ACCEL'][0])))
+            print(('Acceleration - Y (g)                                        {:10.4f}'.format(self.data['DATA_LINEAR_ACCEL'][1])))
+            print(('Acceleration - Z (g)                                        {:10.4f}'.format(self.data['DATA_LINEAR_ACCEL'][2])))
+            print('')
+            print(('Roll  (deg)                                                 {:10.4f}'.format(self.data['DATA_ROLL_PITCH_YAW'][0])))
+            print(('Pitch (deg)                                                 {:10.4f}'.format(self.data['DATA_ROLL_PITCH_YAW'][1])))
+            print(('Yaw   (deg)                                                 {:10.4f}'.format(self.data['DATA_ROLL_PITCH_YAW'][2])))
+            print('')
+            print(('Latitude (+/- = North/South)                                {:10.4f}'.format(self.data['DATA_GPS'][0])))
+            print(('Longitude (+/- = East/West)                                 {:10.4f}'.format(self.data['DATA_GPS'][1])))
+            print(('GPS Calculated Speed (m/s)                                  {:10.4f}'.format(self.data['DATA_GPS'][3])))
             print('')
             print('======================================================================')
         else:
@@ -955,11 +964,11 @@ if __name__ == '__main__':
     try:
         while True:
             # Clear the terminal (optional)
-            os.system('clear')
+            #os.system('clear')
             
             imu.show_imu_data()
             
-            if imu.data <> {}:
+            if imu.data != {}:
                 imu.append_to_data_file()
 
             # 20Hz update (GPS data will be provided, but update at a slower rate)
