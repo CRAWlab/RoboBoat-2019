@@ -1,0 +1,1 @@
+This folder of the repository contains pure Python code used by the [University of Louisiana at Lafayette](http://louisiana.edu) team in the 2019 [RoboBoat](https://www.robonation.org/competition/roboboat) Contest. Much of this code implements baseline functionality that is/will be integrated into ROS nodes.

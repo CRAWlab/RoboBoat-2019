@@ -29,10 +29,11 @@
 #
 # TODO:
 #   * 04/20/19 - JEV - joshua.vaughan@louisiana.edu
-#         - 0.4 throttle is being interpreted as zero. Likely due to:
+#       - 0.4 throttle is being interpreted as zero. Likely due to:
 #           + PWM timing in Adafruit library or
 #           + range of pulse width set
-#         - Account for deadzone around zero throttle
+#       - Account for deadzone around zero throttle
+#       - Check limits on forward and reverse speeds
 #
 ###############################################################################
 
