@@ -36,6 +36,7 @@ import numpy as np
 
 import os, sys
 
+import binascii
 import serial
 import struct
 import math
@@ -260,7 +261,7 @@ class Um6Drv:
                                     stopbits=1, timeout=None)
         self.ser.flushInput()
         self.ser.flushOutput()
-        self.buf = ""
+        self.buf = b""
         self.data_callback = cb
         self.output = outputDataMask
         
@@ -288,17 +289,18 @@ class Um6Drv:
 
     def waitData(self, nbytes=1, timeout=1.0):
         while True:
-            try:
-                self.buf += self.ser.read(self.ser.inWaiting()).decode('utf-8')
-            except (UnicodeDecodeError):
-                pass # TODO: 04/22/19 - JEV - Why do we get a Unicode Error sometimes?
+#             try:
+            self.buf += self.ser.read(self.ser.inWaiting())
+#                 self.buf = binascii.unhexlify(self.buf)
+#             except (UnicodeDecodeError):
+#                 pass # TODO: 04/22/19 - JEV - Why do we get a Unicode Error sometimes?
+
             if len(self.buf)>=nbytes:
+                print(self.buf)
                 return True
-            
+
             rlist, _, _ = select([ self.ser ], [], [], timeout)
-            
-#             print(rlist)
-#             
+
 #             if rlist<=0:
 #                 return False
             
@@ -312,7 +314,7 @@ class Um6Drv:
 
     def syncToHeader(self):
         if self.waitData(3):
-            idx = self.buf.find("snp")
+            idx = self.buf.find(b"snp")
             if idx>=0:
                 self.buf = self.buf[idx+3:]
                 return True
@@ -339,13 +341,13 @@ class Um6Drv:
         self.ser.write('n'.encode('utf-8'))
         self.ser.write('p'.encode('utf-8'))
 
-        chkSum = (self.chToByte("s".encode('utf-8')) +
-                  self.chToByte("n".encode('utf-8')) +
-                  self.chToByte("p".encode('utf-8')))
+        chkSum = (self.chToByte("s") +
+                  self.chToByte("n") +
+                  self.chToByte("p"))
 
         for i in range(0, len(pkt)):
             self.ser.write(chr(pkt[i]).encode('utf-8'))
-            chkSum += chr(pkt[i]).encode('utf-8')
+            chkSum += pkt[i]
 
         strChkSum = ("%s"%(chkSum))
 
@@ -360,7 +362,7 @@ class Um6Drv:
             return Um6Drv.NO_DATA_PACKET
         if not self.waitData(2):
             return Um6Drv.NO_DATA_PACKET
-
+        
         packetType = self.chToByte(self.buf[0])
 
         hasData = packetType >> 7
@@ -652,7 +654,7 @@ class Um6Drv:
     def chToByte(self, ch):
         # convert single char string to unsigned byte
         #return struct.unpack("B", ch)[0]
-        return ch
+        return ord(ch)
         
         
     def calculate_bearing(self,position1, position2):
@@ -924,10 +926,10 @@ class IMU(object):
 
 if __name__ == '__main__':
     #-----  Choose the level of logging -----
-    # Debug level logging
-    # logging.basicConfig(level=logging.DEBUG,
-    #                     format='From %(threadName)-10s: %(message)s',
-    #                     )
+#     Debug level logging
+    logging.basicConfig(level=logging.DEBUG,
+                        format='From %(threadName)-10s: %(message)s',
+                        )
 
     # Info level logging
     # logging.basicConfig(level=logging.INFO,
@@ -941,9 +943,9 @@ if __name__ == '__main__':
     #                     
 
     # Critical level logging
-    logging.basicConfig(level=logging.CRITICAL,
-                        format='From %(threadName)-10s: %(message)s',
-                        )
+#     logging.basicConfig(level=logging.CRITICAL,
+#                         format='From %(threadName)-10s: %(message)s',
+#                         )
 
     ### EXAMPLE USAGE ###
     print('\nStarting up...')
