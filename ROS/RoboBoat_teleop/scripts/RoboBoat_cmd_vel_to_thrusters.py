@@ -76,7 +76,7 @@ MAX_FORWARD_PER_THRUSTER = 100    # defined as 100 (max)
 MAX_REVERSE_PER_THRUSTER = -80    # Reverse thrust is ~80% of forward
 
 # Define a thrust ratio to use in scaling for cases needing reverse thrust
-thrust_ratio = MAX_REVERSE_PER_THRUSTER / MAX_FORWARD_PER_THRUSTER
+thrust_ratio = np.abs(MAX_REVERSE_PER_THRUSTER / MAX_FORWARD_PER_THRUSTER)
 
 # The 16-channel PWM hat has (surprise!!) 16 channels
 kit = ServoKit(channels=16)
@@ -141,8 +141,8 @@ class RoboBoat_ThrustMapper():
         # Calculate the maximum posdible net forces/torques in each direction
         # We'll use these to scale the velocity according to the range we predict 
         # is its min/max
-        self.MAX_SURGE_FORCE = np.dot(A[0,:], MAX_FORWARD_PER_THRUSTER * np.ones(4))
-        self.MAX_SWAY_FORCE = np.dot(A[1,:], np.array([MAX_REVERSE_PER_THRUSTER, 
+        self.MAX_SURGE_FORCE = np.dot(self.A[0,:], thrust_ratio * MAX_FORWARD_PER_THRUSTER * np.ones(4))
+        self.MAX_SWAY_FORCE = np.dot(self.A[1,:], np.array([MAX_REVERSE_PER_THRUSTER, 
                                                        thrust_ratio * MAX_FORWARD_PER_THRUSTER, 
                                                        thrust_ratio * MAX_FORWARD_PER_THRUSTER, 
                                                        MAX_REVERSE_PER_THRUSTER]) * np.sin(PHI))
@@ -170,7 +170,7 @@ class RoboBoat_ThrustMapper():
         
         # We also set up a heartbeat counter so that we shut off the thrusters
         # if we don't receive a cmd_vel command after some time
-        self.heartbeat_coutner = 0
+        self.heartbeat_counter = 0
 
 
     def calculate_and_assign_thrust(self, twist):
@@ -184,29 +184,29 @@ class RoboBoat_ThrustMapper():
         self.heartbeat_counter = 0
         
         # Then, grab the parts of the Twist message we care about
-        self.surge_vel_command = data.linear.x
-        self.sway_vel_command = data.linear.y
-        self.yaw_vel_command = data.angular.z
+        self.surge_vel_command = twist.linear.x
+        self.sway_vel_command = twist.linear.y
+        self.yaw_vel_command = twist.angular.z
         
         # Now, represent those desired velocities as a percentage of the maximum
         # in each direction
-        desired_input_percentage = np.array([self.surge_vel_command / self.MAX_SURGE_VEL,
-                                             self.sway_vel_command / self.MAX_SWAY_VEL,
-                                             self.yaw_vel_command / self.MAX_YAW_VEL])
+        desired_input_percentage = 100 * np.array([self.surge_vel_command / self.MAX_SURGE_VEL,
+                                                   self.sway_vel_command / self.MAX_SWAY_VEL,
+                                                   self.yaw_vel_command / self.MAX_YAW_VEL])
 
         # Then, map that to a percentage of the maximum force/torque in the 
         # corresponding axis.
         #
         # Note; This is a very rough way to do this. We'd do better to 
         # incorporate some knowledge of the boat's dynamics
-        desired_net_inputs = desired_input_percentage / 100 * np.array([MAX_SURGE_FORCE,
-                                                                        MAX_SWAY_FORCE,
-                                                                        MAX_YAW_TORQUE])
+        desired_net_inputs = desired_input_percentage / 100 * np.array([self.AX_SURGE_FORCE,
+                                                                        self.AX_SWAY_FORCE,
+                                                                        self.AX_YAW_TORQUE])
 
         # Finally, solve for the thruster inputs to generate those
-        thrusts, residuals, rank, s = np.linalg.lstsq(A, desired_net_inputs)
+        thrusts, residuals, rank, s = np.linalg.lstsq(self.A, desired_net_inputs)
 
-        rospy.info('Raw thurster solution = {} N'.format(thursts))
+        rospy.loginfo('Raw thruster solution = {} %'.format(thursts))
 
         # TODO: 04/27/19 - JEV - Be more elegant here. We can do this without scaling
         #                        twice, as often happens here.
@@ -229,6 +229,9 @@ class RoboBoat_ThrustMapper():
             rospy.loginfo('Scaled solution = {} %'.format(thrusts))
         
         # Finally, we can send the throttle commands to the thrusters
+        rospy.loginfo('Throttle: {}'.format(thrusts / 100.0 + THROTTLE_OFFSET))
+        
+        # TODO: 05/02/19 - JEV - Do we need to clip throttle commands to +/-1 to account for the OFFSET
         self.port_stern.throttle = thrusts[0] / 100.0 + THROTTLE_OFFSET
         self.port_bow.throttle = thrusts[1] / 100.0 + THROTTLE_OFFSET
         self.stbd_stern.throttle = thrusts[2] / 100.0 + THROTTLE_OFFSET
@@ -253,10 +256,21 @@ class RoboBoat_ThrustMapper():
                     if self.heartbeat_counter == HEARTBEAT_MAX_MISSED:
                         rospy.logerr("Heartbeat not reset for {} steps. Stopping.".format(HEARTBEAT_MAX_MISSED))
         
-                cmd_vel.publish(Twist()) # publish all zeros to stop
+                    self.port_stern.throttle = 0.0 + THROTTLE_OFFSET
+                    self.port_bow.throttle = 0.0 + THROTTLE_OFFSET
+                    self.stbd_stern.throttle = 0.0 + THROTTLE_OFFSET
+                    self.stbd_bow.throttle = 0.0 + THROTTLE_OFFSET
 
+                self.rate.sleep()
+                
         except (KeyboardInterrupt, SystemExit):
-            cmd_vel.publish(Twist()) # publish all zeros to stop
+            self.port_stern.throttle = 0.0 + THROTTLE_OFFSET
+            self.port_bow.throttle = 0.0 + THROTTLE_OFFSET
+            self.stbd_stern.throttle = 0.0 + THROTTLE_OFFSET
+            self.stbd_bow.throttle = 0.0 + THROTTLE_OFFSET
+
+            raise
+
             
 
 if __name__ = "__main__":
