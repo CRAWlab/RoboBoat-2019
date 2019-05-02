@@ -273,7 +273,7 @@ class RoboBoat_ThrustMapper():
 
             
 
-if __name__ = "__main__":
+if __name__ == "__main__":
     thrust_mapper = RoboBoat_ThrustMapper()
     
     try:
