@@ -152,7 +152,7 @@ class RoboBoat_ThrustMapper():
         # TODO: 05/02/19 - JEV - Assumed to be symmetric. Are they?
         self.MAX_SURGE_VEL = 6.643  # From calculations in final presentation (m/s)
         self.MAX_SWAY_VEL = 3.0     # 05/02/19 - JEV - Total guess (m/s)
-        self.MAX_YAW_VEL =          # 05/02/19 - JEV - Total guess (rad/s)
+        self.MAX_YAW_VEL = 0.5      # 05/02/19 - JEV - Total guess (rad/s)
         
         # Now, Set up the ROS node and subscribe to the cmd_vel topic
         # We'll also set up publishing to Chatter for monitoring
