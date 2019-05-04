@@ -34,10 +34,10 @@
 #   * 
 #
 # TODO:
-#    * 04/20/19 - JEV - Fix throttle offset issue
 #    * 04/27/19 - JEV - Check thruster positioning
 #    * 05/02/19 - JEV - clean up thrust and velocities to match the actual limits
 #    * 05/02/19 - JEV - Vectorize thruster definitions
+#    * 05/04/19 - JEV - Check that throttle fix allows full range of thruster speeds
 ###############################################################################
 
 import numpy as np
@@ -102,7 +102,7 @@ class RoboBoat_ThrustMapper():
         self.thruster_angle = thruster_angle
         self.max_throttle = max_throttle
         
-        # TODO: 05/02/19 - JEV - We should probably vectorize these definiations
+        # TODO: 05/02/19 - JEV - We should probably vectorize these definitions
         #                        to make accessing thruster info and assigning 
         #                        speeds for them more efficient.
         #
@@ -115,10 +115,16 @@ class RoboBoat_ThrustMapper():
 
         # The BlueRobotics ESC expects pulses in the range 1100-1900us, so we modify
         # the range of pulses for the pin connected to the ESC
-        self.port_stern.set_pulse_width_range(1100, 1900)
-        self.port_bow.set_pulse_width_range(1100, 1900)
-        self.stbd_stern.set_pulse_width_range(1100, 1900)
-        self.stbd_bow.set_pulse_width_range(1100, 1900)
+        #
+        # However, to compensate for error in timing, we shift the range up
+        # to be centered around 1500 + 0.4 * 800
+        #
+        # TODO: 05/04/19 -- JEV -- check that these new offsets allow for the 
+        #                          full range of motor output
+        self.port_stern.set_pulse_width_range(1260, 2060)
+        self.port_bow.set_pulse_width_range(1260, 2060)
+        self.stbd_stern.set_pulse_width_range(1260, 2060)
+        self.stbd_bow.set_pulse_width_range(1260, 2060)
         
         # Finally, initialize the Thrusters
         # To initialize the thruster, we need to send zero speed for some time
@@ -206,7 +212,7 @@ class RoboBoat_ThrustMapper():
         # Finally, solve for the thruster inputs to generate those
         thrusts, residuals, rank, s = np.linalg.lstsq(self.A, desired_net_inputs)
 
-        rospy.loginfo('Raw thruster solution = {} %'.format(thursts))
+        rospy.loginfo('Raw thruster solution = {} %'.format(thrusts))
 
         # TODO: 04/27/19 - JEV - Be more elegant here. We can do this without scaling
         #                        twice, as often happens here.

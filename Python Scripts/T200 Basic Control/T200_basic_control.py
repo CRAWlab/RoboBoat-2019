@@ -34,6 +34,7 @@
 #           + range of pulse width set
 #       - Account for deadzone around zero throttle
 #       - Check limits on forward and reverse speeds
+#   * 05/04/19 - JEV - Check that throttle fix allows full range of thruster speeds
 #
 ###############################################################################
 
@@ -61,7 +62,14 @@ thruster = kit.continuous_servo[0]
 
 # The BlueRobotics ESC expects pulses in the range 1100-1900us, so we modify
 # the range of pulses for the pin connected to the ESC
-thruster.set_pulse_width_range(1100, 1900)
+#
+# However, to compensate for error in timing, we shift the range up
+# to be centered around 1500 + 0.4 * 800
+# This shift has been tested to work for initialization and control
+#
+# TODO: 05/04/19 -- JEV -- check that these new offsets allow for the 
+#                          full range of motor output
+thruster.set_pulse_width_range(1260, 2060)
 
 # To initialize the thruster, we need to send zero speed for some time
 # You should hear two beeps once the ESC is initialized
