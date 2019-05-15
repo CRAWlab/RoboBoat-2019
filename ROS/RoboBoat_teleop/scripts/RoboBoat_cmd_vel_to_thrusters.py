@@ -65,7 +65,7 @@ ESC_STARTUP_DELAY = 1.0         # Time to sleep during initialization
 #       * Likely due to:
 #           - PWM timing in Adafruit library or
 #           - range of pulse width set
-THROTTLE_OFFSET = 0.4           # Hack for now
+THROTTLE_OFFSET = 0.0          # Hack for now
 
 
 # NOTE: This is a *very* rough approximation based on the forward and reverse
@@ -110,8 +110,8 @@ class RoboBoat_ThrustMapper():
         # the code easier to understand
         self.port_stern = kit.continuous_servo[0]
         self.port_bow = kit.continuous_servo[4]
-        self.stdb_stern = kit.continuous_servo[8]
-        self.stbd_bow = kit.continuous_servo[12]
+        self.stbd_stern = kit.continuous_servo[12]
+        self.stbd_bow = kit.continuous_servo[8]
 
         # The BlueRobotics ESC expects pulses in the range 1100-1900us, so we modify
         # the range of pulses for the pin connected to the ESC
@@ -151,14 +151,14 @@ class RoboBoat_ThrustMapper():
         self.MAX_SWAY_FORCE = np.dot(self.A[1,:], np.array([MAX_REVERSE_PER_THRUSTER, 
                                                        thrust_ratio * MAX_FORWARD_PER_THRUSTER, 
                                                        thrust_ratio * MAX_FORWARD_PER_THRUSTER, 
-                                                       MAX_REVERSE_PER_THRUSTER]) * np.sin(PHI))
+                                                       MAX_REVERSE_PER_THRUSTER]) * np.sin(thruster_angle))
         self.MAX_YAW_TORQUE = (WIDTH * 2 * thrust_ratio * MAX_FORWARD_PER_THRUSTER) - (WIDTH * 2 * MAX_REVERSE_PER_THRUSTER)
         
         # Define the maximum velocities in each direction
         # TODO: 05/02/19 - JEV - Assumed to be symmetric. Are they?
         self.MAX_SURGE_VEL = 6.643  # From calculations in final presentation (m/s)
-        self.MAX_SWAY_VEL = 3.0     # 05/02/19 - JEV - Total guess (m/s)
-        self.MAX_YAW_VEL = 0.5      # 05/02/19 - JEV - Total guess (rad/s)
+        self.MAX_SWAY_VEL = 5.0     # 05/13/19 - LM - Could use some fine tuning (m/s)
+        self.MAX_YAW_VEL = 2      # 05/13/19 - LM - Better number from testing (rad/s)
         
         # Now, Set up the ROS node and subscribe to the cmd_vel topic
         # We'll also set up publishing to Chatter for monitoring
