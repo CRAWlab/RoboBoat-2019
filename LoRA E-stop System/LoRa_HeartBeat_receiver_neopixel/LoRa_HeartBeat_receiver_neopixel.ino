@@ -147,8 +147,18 @@ bool status_okay = true;
 // A string to hold the status message from the CPU
 String status_string = "green";
 
+
+// Configuration variables for relay control
+#define RELAY_PIN 5       // pin connected to the relay
+
 void setup() {
+    
+    // Set up the onboard LED pin as output
     pinMode(LED, OUTPUT);
+    
+    // Set up the pin connected the relay as an output
+    pinMode(RELAY_PIN, OUTPUT);
+    
     pinMode(RFM95_RST, OUTPUT);
     digitalWrite(RFM95_RST, HIGH);
 
@@ -302,6 +312,9 @@ void loop() {
     if (num_missed_heartbeats < MAX_MISSED_HEARTBEATS) {
         status_okay = true;
         //Serial.println("Status Okay");
+        
+        // Keep the relay pin high to keep the relay closed/on
+        digitalWrite(RELAY_PIN, HIGH);
     }
     else if (num_missed_heartbeats == MAX_MISSED_HEARTBEATS) {
         Serial.println("Heartbeat missed");
@@ -309,9 +322,14 @@ void loop() {
         digitalWrite(LED, HIGH);
 
         status_okay = false;
+        
+        // Set the status LED Strip to red
         low = RED_LOW;
         med = RED_MED;
         high = RED_HIGH;
+        
+        // Keep the relay pin low to let the relay open
+        digitalWrite(RELAY_PIN, LOW);
     }
     else { // Do not care what the status is from the CPU, set red
         digitalWrite(LED, HIGH);
@@ -320,6 +338,9 @@ void loop() {
         low = RED_LOW;
         med = RED_MED;
         high = RED_HIGH;
+        
+        // Keep the relay pin low to let the relay open
+        digitalWrite(RELAY_PIN, LOW);
     }
 
     // Increment our Knight Rider Effect with color based on the current status
