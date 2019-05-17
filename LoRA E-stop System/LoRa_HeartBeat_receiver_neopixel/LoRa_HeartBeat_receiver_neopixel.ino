@@ -4,7 +4,8 @@ LoRa_HeartBeat_receiver_neopixel.ino
 
 Arduino sketch to receive heartbeat messages and change the color of a NeoPixel 
 strand based on current status. The strand also does a "Knight Rider" effect
-since moving colors are easier to see than static ones.
+since moving colors are easier to see than static ones. It also sends and 
+receives status messages over the serial port.
 
 Intended for use with the Feather M0 with LoRa Radio:
   * https://www.adafruit.com/product/3178
@@ -19,7 +20,14 @@ Created: 05/09/19
    - http://www.ucs.louisiana.edu/~jev9637
 
  Modified:
-   *
+   * 05/16/19 - JEV - joshua.vaughan@louisiana.edu
+        - Added serial comm. for status
+        - Updated yellow color
+
+ TODO:
+ * 05/16/19 - Add relay control output, just digital IO
+ * 05/16/19 - Update messages to/from CPU for status
+ * 05/16/19 - clean up color assignment - use an array? struct?
 
 ---------------------------------------------------------------------------- */
 
@@ -120,13 +128,24 @@ uint32_t GREEN_HIGH = strip.Color(0, 255, 0);
 uint32_t BLUE_LOW = strip.Color(0, 0, 32);
 uint32_t BLUE_MED = strip.Color(0, 0, 64);
 uint32_t BLUE_HIGH = strip.Color(0, 0, 255);
-uint32_t YELLOW_LOW = strip.Color(16, 32, 0);
-uint32_t YELLOW_MED = strip.Color(32, 64, 0);
-uint32_t YELLOW_HIGH = strip.Color(128, 255, 0);
+uint32_t YELLOW_LOW = strip.Color(32, 32, 0);
+uint32_t YELLOW_MED = strip.Color(64, 64, 0);
+uint32_t YELLOW_HIGH = strip.Color(255, 255, 0);
 uint32_t WHITE_LOW = strip.Color(32, 32, 32);
 uint32_t WHITE_MED = strip.Color(64, 64, 64);
 uint32_t WHITE_HIGH = strip.Color(255, 255, 255);
 
+// Variables to hold the current status of the Neopixel strip
+// Initialized to be red
+uint32_t low = RED_LOW;
+uint32_t med = RED_MED;
+uint32_t high = RED_HIGH;
+
+// A boolean value to keep track of the current status, okay if true
+bool status_okay = true;
+
+// A string to hold the status message from the CPU
+String status_string = "green";
 
 void setup() {
     pinMode(LED, OUTPUT);
@@ -134,6 +153,7 @@ void setup() {
     digitalWrite(RFM95_RST, HIGH);
 
     Serial.begin(115200);
+    Serial.setTimeout(100);
 
     // Wait for the serial monitor to open
     // Be sure to comment this out in application
@@ -171,7 +191,7 @@ void setup() {
     // Now, set up the NeoPixels
     strip.begin();            // INITIALIZE NeoPixel strip object (REQUIRED)
     strip.show();             // Turn OFF all pixels ASAP
-    strip.setBrightness(128); // Set BRIGHTNESS to about 1/2 (max = 255)
+    strip.setBrightness(255); // Set BRIGHTNESS to about 1/2 (max = 255)
 }
 
 void loop() {
@@ -188,6 +208,10 @@ void loop() {
     start_time = millis();
     
     if (rf95.available()) {
+        // Add a linespace between each heartbeat loop
+        // TODO: 05/16/19 - JEV - Comment out in application
+        Serial.println("");
+    
         // Should be a message for us now
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
         uint8_t len = sizeof(buf);
@@ -196,16 +220,9 @@ void loop() {
             // Here, we'll always indicate that we received a message
             // In operation, we probably don't want to always print this out
             digitalWrite(LED, HIGH);
-            RH_RF95::printBuffer("Received: ", buf, len);
-            Serial.print("Got: ");
-            Serial.println((char*)buf);
-            
-            // This will print the signal strength of the last message received.
-            // TODO: 05/09/19 - JEV - We probably want to move this to apply only
-            //                        to messages we have identified as properly-
-            //                        formatted heartbeats
-            Serial.print("RSSI: ");
-            Serial.println(rf95.lastRssi(), DEC);
+            //RH_RF95::printBuffer("Received: ", buf, len);
+            //Serial.print("Got: ");
+            //Serial.println((char*)buf);
 
             // Compare the message received with the HEARTBEAT_MESSAGE expected
             // If it doesn't match, increment the num_missed_heartbeats counter
@@ -217,6 +234,13 @@ void loop() {
             else {
                 // reset missed heartbeat counter 
                 num_missed_heartbeats = 0;
+                
+                // Set the status okay to true
+                status_okay = true;
+
+                // This will print the signal strength of the last message received.
+                Serial.print("RSSI: ");
+                Serial.println(rf95.lastRssi(), DEC);
                 
                 // Send a reply
                 uint8_t data[] = "$UL_ACK";
@@ -232,67 +256,101 @@ void loop() {
         num_missed_heartbeats = num_missed_heartbeats + 1;
         
         if (num_missed_heartbeats < MAX_MISSED_HEARTBEATS) {
-            Serial.println("Heartbeat missed");    
+            //Serial.println("Heartbeat missed");    
+            ;
         }
     }
-
+    
+    // Now, read the serial communication with the host CPU
+    if (Serial.available() > 0) {
+        // get incoming data, which must be terminated with a newline character
+        status_string = Serial.readStringUntil('\n');
+        Serial.print("Status: ");
+        Serial.println(status_string);
+    }
+    
+    // Compare the message received with the the available colors
+    // to set the color of the LED strip
+    if (status_string.equals("green")) {
+        low = GREEN_LOW;
+        med = GREEN_MED;
+        high = GREEN_HIGH;
+    }
+    else if (status_string.equals("yellow")) {
+        low = YELLOW_LOW;
+        med = YELLOW_MED;
+        high = YELLOW_HIGH;
+    }
+    else if (status_string.equals("blue")) {
+        low = BLUE_LOW;
+        med = BLUE_MED;
+        high = BLUE_HIGH;
+    }
+    else if (status_string.equals("white")) {
+        low = WHITE_LOW;
+        med = WHITE_MED;
+        high = WHITE_HIGH;
+    }
+    else if (status_string.equals("red")) {
+        low = RED_LOW;
+        med = RED_MED;
+        high = RED_HIGH;
+    }
+    
     // Now, check if we've exceeded the maximum number of missed beats
     // and process the NeoPixel colors accordingly
     if (num_missed_heartbeats < MAX_MISSED_HEARTBEATS) {
-        // Turn the neopixels green
-        strip.fill(GREEN_MED, 0);
-
-        if (pixel_index + 5 >= LED_COUNT) {
-            going = 0;
-        }
-        else if (pixel_index <= 0) {
-            going = 1;
-        }
-
-        if (going) {
-            strip.fill(GREEN_HIGH, pixel_index, 5);              
-            pixel_index = pixel_index + 1;
-        }
-        else {
-            strip.fill(GREEN_HIGH, pixel_index, 5);
-            pixel_index = pixel_index - 1;
-        }
+        status_okay = true;
+        //Serial.println("Status Okay");
     }
     else if (num_missed_heartbeats == MAX_MISSED_HEARTBEATS) {
         Serial.println("Heartbeat missed");
         Serial.println("Missed too many heartbeats!!!");
         digitalWrite(LED, HIGH);
 
-        // And turn the neopixels red
-        strip.fill(RED_MED, 0);
-        strip.fill(RED_HIGH, pixel_index, 5);
-        strip.show();  // Update NeoPixel strip
+        status_okay = false;
+        low = RED_LOW;
+        med = RED_MED;
+        high = RED_HIGH;
     }
-    else {
+    else { // Do not care what the status is from the CPU, set red
         digitalWrite(LED, HIGH);
 
-        // And turn the neopixels red
-        strip.fill(RED_MED, 0);
-
-        if (pixel_index + 5 >= LED_COUNT) {
-            going = 0;
-        }
-        else if (pixel_index <= 0) {
-            going = 1;
-        }
-
-        if (going) {
-            strip.fill(RED_HIGH, pixel_index, 5);              
-            pixel_index = pixel_index + 1;
-        }
-        else {
-            strip.fill(RED_HIGH, pixel_index, 5);
-            pixel_index = pixel_index - 1;
-        }
+        status_okay = false;
+        low = RED_LOW;
+        med = RED_MED;
+        high = RED_HIGH;
     }
-    
+
+    // Increment our Knight Rider Effect with color based on the current status
+    // Fill the neopixels with medium brightness 
+    strip.fill(med, 0);
+
+    if (pixel_index + 5 >= LED_COUNT) {
+        going = 0;
+    }
+    else if (pixel_index <= 0) {
+        going = 1;
+    }
+
+    if (going) {
+        strip.fill(high, pixel_index, 5);              
+        pixel_index = pixel_index + 1;
+    }
+    else {
+        strip.fill(high, pixel_index, 5);
+        pixel_index = pixel_index - 1;
+    }
     strip.show();  // Update NeoPixel strip
 
+    Serial.print("Status: ");
+    if (status_okay) {
+        Serial.println(status_string);
+    }
+    else {
+        Serial.println("No heartbeat");
+    }
+    
     elapsed_time = millis() - start_time;
 
     if (elapsed_time < 100) {
