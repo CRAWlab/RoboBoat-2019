@@ -120,76 +120,87 @@ Adafruit_SSD1306 display = Adafruit_SSD1306(128, 32, &Wire);
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-// Blinky on receipt
-#define LED 13
+// Define the hardware pins for LED and button and button state variable
+#define ONBOARD_LED 13
+#define BUTTON_LED_PIN 14  // The pin the LED of the button is connected to
+#define BUTTON_PIN 15      // The pin the button of the button 
+int button_state = 1;      // Holds the state of the button, 1=not pressed
 
-void setup()
-{
-  pinMode(LED, OUTPUT);
-  pinMode(RFM95_RST, OUTPUT);
-  digitalWrite(RFM95_RST, HIGH);
+// The desired time to loop on sending (ms)
+#define DESIRED_LOOP_TIME 500 
 
-  Serial.begin(115200);
 
-  // Wait for the serial monitor to open
-  // Be sure to comment this out in application
-//  while (!Serial) {
-//    delay(1);
-//  }
-  delay(100);
-
-  // manual reset
-  digitalWrite(RFM95_RST, LOW);
-  delay(10);
-  digitalWrite(RFM95_RST, HIGH);
-  delay(10);
-
-  while (!rf95.init()) {
+void setup() {
+    pinMode(ONBOARD_LED, OUTPUT);
+    pinMode(BUTTON_LED_PIN, OUTPUT);
+    
+    // Define the button to be an input with a pullup
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    
+    pinMode(RFM95_RST, OUTPUT);
+    digitalWrite(RFM95_RST, HIGH);
+    
+    Serial.begin(115200);
+    
+    // Wait for the serial monitor to open
+    // Be sure to comment this out in application
+    //  while (!Serial) {
+    //    delay(1);
+    //  }
+    delay(100);
+    
+    // manual reset
+    digitalWrite(RFM95_RST, LOW);
+    delay(10);
+    digitalWrite(RFM95_RST, HIGH);
+    delay(10);
+    
+    while (!rf95.init()) {
     Serial.println("LoRa radio init failed");
     while (1);
-  }
-  Serial.println("LoRa radio init OK!");
-
-  // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
-  if (!rf95.setFrequency(RF95_FREQ)) {
+    }
+    Serial.println("LoRa radio init OK!");
+    
+    // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
+    if (!rf95.setFrequency(RF95_FREQ)) {
     Serial.println("setFrequency failed");
     while (1);
-  }
-  Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
-
-  // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
-
-  // The default transmitter power is 13dBm, using PA_BOOST.
-  // If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then
-  // you can set transmitter powers from 5 to 23 dBm:
-  rf95.setTxPower(23, false);
-
-  // Now, finish the set up the OLED
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); // Address 0x3C for 128x32
-  
-  // Clear the display buffer.
-  display.clearDisplay();
-  display.display();
-
-  // Set up the OLED feather's onboard buttons
-  pinMode(BUTTON_A, INPUT_PULLUP);
-  pinMode(BUTTON_B, INPUT_PULLUP);
-  pinMode(BUTTON_C, INPUT_PULLUP);
-
-  // Set up text display
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0,0);
-
-  display.println("Display and Radio \nInitialized");
-  display.setCursor(0,0);
-  display.display(); // actually display all of the above
-  
-  delay(1000); // Show that for one second
-
-  // Then, clear the display buffer.
-  display.clearDisplay();
-  display.display();
+    }
+    Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
+    
+    // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
+    
+    // The default transmitter power is 13dBm, using PA_BOOST.
+    // If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then
+    // you can set transmitter powers from 5 to 23 dBm:
+    rf95.setTxPower(23, false);
+    
+    // Now, finish the set up the OLED
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C); // Address 0x3C for 128x32
+    
+    // Clear the display buffer.
+    display.clearDisplay();
+    display.display();
+    
+    // Set up the OLED feather's onboard buttons
+    pinMode(BUTTON_A, INPUT_PULLUP);
+    pinMode(BUTTON_B, INPUT_PULLUP);
+    pinMode(BUTTON_C, INPUT_PULLUP);
+    
+    // Set up text display
+    display.setTextSize(1);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0);
+    
+    display.println("Display and Radio \nInitialized");
+    display.setCursor(0,0);
+    display.display(); // actually display all of the above
+    
+    delay(1000); // Show that for one second
+    
+    // Then, clear the display buffer.
+    display.clearDisplay();
+    display.display();
 }
 
 void loop() {
@@ -199,81 +210,105 @@ void loop() {
 
     unsigned long start_time;
     unsigned long elapsed_time;
+
+    // Save the time we start the loop    
     start_time = millis();
-    
-    rf95.send(HEARTBEAT_MESSAGE, sizeof(HEARTBEAT_MESSAGE));
-    display.println("Heartbeat: *");
+        
+    // Using the pullup means that button_state will be HIGH (1) 
+    // when the button is *not* pressed
+    button_state = digitalRead(BUTTON_PIN);
 
-    // Display these headings too, so it seems only the number changes
-    display.setCursor(0,10);
-    display.println("Acknowledged: "); 
-    display.setCursor(0,20);
-    display.print("RSSI: ");
-    display.setCursor(0,0);
-    display.display(); // actually display all of the above
-    
-    rf95.waitPacketSent();
-    digitalWrite(LED, LOW);
-    display.clearDisplay();
-    display.println("Heartbeat:  "); // Clear the sending message once sent
-    
-    // Display these headings too, so it seems only the number changes
-    display.setCursor(0,10);
-    display.println("Acknowledged: "); 
-    display.setCursor(0,20);
-    display.print("RSSI: ");
-    display.display(); // actually display all of the above
-    display.setCursor(0,10);
-    
-    // Now, check for the acknowledgement of it
-    if (rf95.available()) {
-        // Should be a message for us now
-        uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-        uint8_t len = sizeof(buf);
-    
-        if (rf95.recv(buf, &len)) {
-            // Here, we'll always indicate that we received a message
-            // In operation, we probably don't want to always print this out
-            digitalWrite(LED, HIGH);
-            RH_RF95::printBuffer("Received: ", buf, len);
-            Serial.print("Got: ");
-            Serial.println((char*)buf);
-            Serial.print("RSSI: ");
-            Serial.println(rf95.lastRssi(), DEC);
+    if (button_state) {  
+        // If the button is not pressed, we want the LED on
+        digitalWrite(BUTTON_LED_PIN, HIGH);
 
-            // Compare the message received with the ACKNOWLEDGE_MESSAGE expected
-            if (strncmp((char*)buf, ACKNOWLEDGE_MESSAGE, ACKNOWLEDGE_MESSAGE_LENGTH) == 0) {
-                Serial.println("Heartbeat acknowledged.");
-
-                display.println("Acknowledged: :)"); // Clear the sending message once sent
-                display.setCursor(0,20);
-                display.print("RSSI: ");
-                display.println(rf95.lastRssi(), DEC);
-                display.display();
+        // And run the heartbeat functionality
+        rf95.send(HEARTBEAT_MESSAGE, sizeof(HEARTBEAT_MESSAGE));
+        display.println("Heartbeat: *");
+    
+        // Display these headings too, so it seems only the number changes
+        display.setCursor(0,10);
+        display.println("Acknowledged: "); 
+        display.setCursor(0,20);
+        display.print("RSSI: ");
+        display.setCursor(0,0);
+        display.display(); // actually display all of the above
+        
+        rf95.waitPacketSent();
+        digitalWrite(ONBOARD_LED, LOW);
+        display.clearDisplay();
+        display.println("Heartbeat:  "); // Clear the sending message once sent
+        
+        // Display these headings too, so it seems only the number changes
+        display.setCursor(0,10);
+        display.println("Acknowledged: "); 
+        display.setCursor(0,20);
+        display.print("RSSI: ");
+        display.display(); // actually display all of the above
+        display.setCursor(0,10);
+        
+        // Now, check for the acknowledgement of it
+        if (rf95.available()) {
+            // Should be a message for us now
+            uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+            uint8_t len = sizeof(buf);
+        
+            if (rf95.recv(buf, &len)) {
+                // Here, we'll always indicate that we received a message
+                // In operation, we probably don't want to always print this out
+                digitalWrite(ONBOARD_LED, HIGH);
+                RH_RF95::printBuffer("Received: ", buf, len);
+                Serial.print("Got: ");
+                Serial.println((char*)buf);
+                Serial.print("RSSI: ");
+                Serial.println(rf95.lastRssi(), DEC);
+    
+                // Compare the message received with the ACKNOWLEDGE_MESSAGE expected
+                if (strncmp((char*)buf, ACKNOWLEDGE_MESSAGE, ACKNOWLEDGE_MESSAGE_LENGTH) == 0) {
+                    Serial.println("Heartbeat acknowledged.");
+    
+                    display.println("Acknowledged: :)"); // Clear the sending message once sent
+                    display.setCursor(0,20);
+                    display.print("RSSI: ");
+                    display.println(rf95.lastRssi(), DEC);
+                    display.display();
+                }
+                else {
+                    Serial.println("Message was not an acknowledgement.");
+                    display.println("Acknowledged: :/"); // Clear the sending message once sent
+                    display.setCursor(0,20);
+                    display.print("RSSI: ");
+                    display.println(rf95.lastRssi(), DEC);
+                    display.display();
+                }
             }
-            else {
-                Serial.println("Message was not an acknowledgement.");
-                display.println("Acknowledged: :/"); // Clear the sending message once sent
-                display.setCursor(0,20);
-                display.print("RSSI: ");
-                display.println(rf95.lastRssi(), DEC);
-                display.display();
-            }
+        }
+        else {
+            Serial.println("Received nothing.");
+            display.println("Acknowledged: :("); // Clear the sending message once sent
+            display.setCursor(0,20);
+            display.println("RSSI: ");
+            display.display();
         }
     }
     else {
-        Serial.println("Received nothing.");
-        display.println("Acknowledged: :("); // Clear the sending message once sent
-        display.setCursor(0,20);
-        display.println("RSSI: ");
-        display.display();
-    }
+        // Otherwise, we want it off and to not send anything
+        digitalWrite(BUTTON_LED_PIN, LOW);
 
+        Serial.println("E-stop Pressed.");
+
+        // Display that we are in an E-stop condition
+        display.setCursor(0,0);
+        display.println("Currently in E-stop"); 
+        display.setCursor(0,10);
+        display.println("Press button to exit."); 
+        display.display(); // actually display all of the above
+    }
     
     elapsed_time = millis() - start_time;
 
-    if (elapsed_time < 500) {
-        delay(500 - elapsed_time);
+    if (elapsed_time < DESIRED_LOOP_TIME) {
+        delay(DESIRED_LOOP_TIME - elapsed_time);
     }
     
     display.clearDisplay();
