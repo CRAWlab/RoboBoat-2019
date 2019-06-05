@@ -107,6 +107,11 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 // How many NeoPixels are attached to the Arduino?
 #define LED_COUNT 30
 
+// Pin that relay output is connected to in order to know status 
+// of hardwired e-stops
+#define WIRED_PIN 14
+int relay_state = 1;   // Holds the state of the relay, 1=open
+
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
@@ -155,6 +160,9 @@ void setup() {
     
     // Set up the onboard LED pin as output
     pinMode(LED, OUTPUT);
+
+    // Set up the relay status pin as an input with pullup resistor
+    pinMode(WIRED_PIN, INPUT_PULLUP);
     
     // Set up the pin connected the relay as an output
     pinMode(RELAY_PIN, OUTPUT);
@@ -341,6 +349,19 @@ void loop() {
         
         // Keep the relay pin low to let the relay open
         digitalWrite(RELAY_PIN, LOW);
+    }
+
+    // Now check the status of the relay output, which tells us the status of
+    // the hardwired E-stops
+    // Using the pullup means that button_state will be HIGH (1) 
+    // when the relay is open
+    if (digitalRead(WIRED_PIN)) {
+        digitalWrite(LED, HIGH);
+
+        status_okay = false;
+        low = RED_LOW;
+        med = RED_MED;
+        high = RED_HIGH;
     }
 
     // Increment our Knight Rider Effect with color based on the current status
