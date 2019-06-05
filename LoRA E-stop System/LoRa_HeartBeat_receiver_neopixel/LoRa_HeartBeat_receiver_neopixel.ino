@@ -152,9 +152,11 @@ bool status_okay = true;
 // A string to hold the status message from the CPU
 String status_string = "green";
 
-
 // Configuration variables for relay control
 #define RELAY_PIN 5       // pin connected to the relay
+
+// The desired time to loop on receiving (ms)
+#define DESIRED_LOOP_TIME 100 
 
 void setup() {
     
@@ -395,7 +397,7 @@ void loop() {
     
     elapsed_time = millis() - start_time;
 
-    if (elapsed_time < 100) {
-        delay(100 - elapsed_time);
+    if (elapsed_time < DESIRED_LOOP_TIME) {
+        delay(DESIRED_LOOP_TIME - elapsed_time);
     }
 }

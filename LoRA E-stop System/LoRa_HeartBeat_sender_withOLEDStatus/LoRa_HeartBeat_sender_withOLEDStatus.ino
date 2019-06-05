@@ -127,7 +127,7 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 int button_state = 1;      // Holds the state of the button, 1=not pressed
 
 // The desired time to loop on sending (ms)
-#define DESIRED_LOOP_TIME 500 
+#define DESIRED_LOOP_TIME 100 
 
 
 void setup() {
