@@ -1,7 +1,7 @@
 <launch>
     <arg name="port" default="/dev/ttyUSB1" />
 
-    <node pkg="imu_um7" type="imu_um7_node.py" name="imu_um7_node" output="screen" respawn="true">
+    <node pkg="imu_um7" type="imu_um7_node.py" name="imu_um7" output="screen" respawn="true">
         <param name="port" type="string" value="$(arg port)"/>
         <rosparam file="$(find imu_um7)/calibration/default.yaml" />
     </node>

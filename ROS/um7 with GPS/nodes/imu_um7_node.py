@@ -42,15 +42,13 @@ import struct
 from time import sleep
 from serial import SerialException
 
-from um7 import UM7
+import um7
 
 # Import the ROS message types we need
 from sensor_msgs.msg import Imu
 from sensor_msgs.msg import NavSatFix, NavSatStatus
 from geometry_msgs.msg import Quaternion
 from geometry_msgs.msg import Vector3Stamped
-
-# from imu_um6.srv import *
 
 # Use the ROS quaternion transformations
 from tf.transformations import quaternion_multiply
@@ -149,7 +147,7 @@ class ImuUm7Node(object):
         
         while not rospy.is_shutdown() and not imu_connected:
             try:
-                self.driver = UM7('s', self.port, self.statevars, baud=115200)
+                self.driver = um7.UM7('s', self.port, self.statevars, baud=115200)
                 imu_connected = True
                 rospy.loginfo("Imu initialization completed")
 
@@ -297,7 +295,7 @@ class ImuUm7Node(object):
                 # So, if we don't have 4, we publish that we don't have a fix
                 if self.number_of_sats_used < 4:
                     self.fix_data.status.status = NavSatStatus.STATUS_NO_FIX
-                     rospy.logwarn("No GPS fix.")
+                    rospy.logwarn("No GPS fix.")
                 else:
                     self.fix_data.status.status = NavSatStatus.STATUS_FIX
             

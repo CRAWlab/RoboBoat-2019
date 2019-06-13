@@ -1,0 +1,18 @@
+<package>
+  <description brief="imu_um7">
+This package is a ROS driver for the CH Robotics UM7 IMU with GPS
+  </description>
+  <author>Jeff Rousseau</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/imu_um6</url>
+
+  <depend package="rospy"/>
+  <depend package="rosbag"/>
+  <depend package="sensor_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="tf"/>
+
+</package>
+
+
