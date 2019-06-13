@@ -1,0 +1,75 @@
+# Docking
+# Enter gate buoys
+# Locate dock 
+# Move X distance from dock
+# Orent perpendicular to dock
+# Find edge of dock
+# Travel parallel to edge of dock plus X distance further
+# Turn around (yaw)
+# Deploy hydrophones (if not already done)
+# Full speed forward for X seconds
+# Kill thrusters
+# Active hydrophones
+# Listen and map out strongest signal distance
+# Raise hydrophones
+# Orient perpendicular to dock
+# Move to calculated docking (sway)
+# Locate Symbol
+# Align Straight with symbol
+# Pause for X seconds
+# Reverse out of dock
+# Exit course
+
+# Maintaining Heading
+# Locate Red and Green Buoys
+# Align with buoys (square up)
+# Move Forward
+# Check yaw (make sure it is unchanged)
+# Check red and green orientation
+# Move forward (yaw unchanged)
+
+# Circumnavigation
+# Locate four buoys
+# Position base on left of buoys
+# Circle buoy clockwise 90o
+# (Repeat 3x)
+# Exit
+
+# OR
+
+# Locate four buoys
+# Position base on left of buoys
+# Circle buoy clockwise 135o
+# (Repeat 3x)
+# Exit
+
+#
+# Slalom Maneuver
+# Locate buoys
+# Align buoys so all are in center
+# Check for red 
+# Start to circle from right
+# Check red and green orientation (red left / green right)
+# Move through and around the left
+# Repeat until finding can buoy
+# Circle can buoy
+# Check red and green orientation (red left / green right)
+# Move through and around the left
+# Finish slalom
+# Exit course
+
+# Autonomous Navigation
+# Locate red and green buoys
+# Check orientation (red left / green right)
+# Move through buoys
+# Repeat
+
+# Find the Path
+# Circle environment and map out the buoys
+# Find a good path toward the center of the environment
+# get to the center without touching any other buoys
+# Once in the center find the centeral can buoy
+# Locate and circle around the can buoy
+# Exit out of the environment
+# Exit course
+
