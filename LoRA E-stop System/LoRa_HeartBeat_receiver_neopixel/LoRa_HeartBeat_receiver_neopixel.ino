@@ -218,7 +218,7 @@ void loop() {
     const char HEARTBEAT_MESSAGE[] = "$ULheartbeat";
     const int HEARTBEAT_MESSAGE_LENGTH = sizeof(HEARTBEAT_MESSAGE) - 1;
     static int num_missed_heartbeats = 0;
-    const int MAX_MISSED_HEARTBEATS = 5;
+    const int MAX_MISSED_HEARTBEATS = 10;
 
     static uint8_t going = 1;
     static uint8_t pixel_index = 0;
@@ -368,7 +368,7 @@ void loop() {
 
     // Increment our Knight Rider Effect with color based on the current status
     // Fill the neopixels with medium brightness 
-    strip.fill(med, 0);
+    strip.fill(high, 0);
 
     if (pixel_index + 5 >= LED_COUNT) {
         going = 0;
@@ -378,11 +378,11 @@ void loop() {
     }
 
     if (going) {
-        strip.fill(high, pixel_index, 5);              
+        strip.fill(low, pixel_index, 5);              
         pixel_index = pixel_index + 1;
     }
     else {
-        strip.fill(high, pixel_index, 5);
+        strip.fill(low, pixel_index, 5);
         pixel_index = pixel_index - 1;
     }
     strip.show();  // Update NeoPixel strip
