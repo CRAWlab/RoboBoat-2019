@@ -1,75 +1,75 @@
 # Docking
-# Enter gate buoys
-# Locate dock 
-# Move X distance from dock
-# Orent perpendicular to dock
-# Find edge of dock
-# Travel parallel to edge of dock plus X distance further
-# Turn around (yaw)
-# Deploy hydrophones (if not already done)
-# Full speed forward for X seconds
-# Kill thrusters
-# Active hydrophones
-# Listen and map out strongest signal distance
-# Raise hydrophones
-# Orient perpendicular to dock
-# Move to calculated docking (sway)
-# Locate Symbol
-# Align Straight with symbol
-# Pause for X seconds
-# Reverse out of dock
-# Exit course
+1. Enter gate buoys
+2. Locate dock 
+3. Move X distance from dock
+4. Orent perpendicular to dock
+5. Find edge of dock
+6. Travel parallel to edge of dock plus X distance further
+7. Turn around (yaw)
+8. Deploy hydrophones (if not already done)
+9. Full speed forward for X seconds
+10. Kill thrusters
+11. Active hydrophones
+12. Listen and map out strongest signal distance
+13. Raise hydrophones
+14. Orient perpendicular to dock
+15. Move to calculated docking (sway)
+16. Locate Symbol
+17. Align Straight with symbol
+18. Pause for X seconds
+19. Reverse out of dock
+20. Exit course
 
 # Maintaining Heading
-# Locate Red and Green Buoys
-# Align with buoys (square up)
-# Move Forward
-# Check yaw (make sure it is unchanged)
-# Check red and green orientation
-# Move forward (yaw unchanged)
+1. Locate Red and Green Buoys
+2. Align with buoys (square up)
+3. Move Forward
+4. Check yaw (make sure it is unchanged)
+5. Check red and green orientation
+6. Move forward (yaw unchanged)
 
 # Circumnavigation
-# Locate four buoys
-# Position base on left of buoys
-# Circle buoy clockwise 90o
-# (Repeat 3x)
-# Exit
+1. Locate four buoys
+2. Position base on left of buoys
+3. Circle buoy clockwise 90o
+4. (Repeat 3x)
+5. Exit
 
-# OR
+OR
 
-# Locate four buoys
-# Position base on left of buoys
-# Circle buoy clockwise 135o
-# (Repeat 3x)
-# Exit
+1. Locate four buoys
+2. Position base on left of buoys
+3. Circle buoy clockwise 135o
+4. (Repeat 3x)
+5. Exit
 
-#
+
 # Slalom Maneuver
-# Locate buoys
-# Align buoys so all are in center
-# Check for red 
-# Start to circle from right
-# Check red and green orientation (red left / green right)
-# Move through and around the left
-# Repeat until finding can buoy
-# Circle can buoy
-# Check red and green orientation (red left / green right)
-# Move through and around the left
-# Finish slalom
-# Exit course
+1. Locate buoys
+2. Align buoys so all are in center
+3. Check for red 
+4. Start to circle from right
+5. Check red and green orientation (red left / green right)
+6. Move through and around the left
+7. Repeat until finding can buoy
+8. Circle can buoy
+9. Check red and green orientation (red left / green right)
+10. Move through and around the left
+11. Finish slalom
+12. Exit course
 
 # Autonomous Navigation
-# Locate red and green buoys
-# Check orientation (red left / green right)
-# Move through buoys
-# Repeat
+1. Locate red and green buoys
+2. Check orientation (red left / green right)
+3. Move through buoys
+4. Repeat
 
 # Find the Path
-# Circle environment and map out the buoys
-# Find a good path toward the center of the environment
-# get to the center without touching any other buoys
-# Once in the center find the centeral can buoy
-# Locate and circle around the can buoy
-# Exit out of the environment
-# Exit course
+1. Circle environment and map out the buoys
+2. Find a good path toward the center of the environment
+3. get to the center without touching any other buoys
+4. Once in the center find the centeral can buoy
+5. Locate and circle around the can buoy
+6. Exit out of the environment
+7. Exit course
 
