@@ -195,6 +195,62 @@ class TD_communication(object):
         return True
 
 
+    def process_dock_message(self, dock_message):
+        """ 
+        Callback function for the message from the boat on the /dock
+        topic. You should not need to call this directly. It gets called each 
+        time a message is received.
+
+        We'll use it to report the dock in the message
+        
+        Arguments:
+          dock_message : the message received, should be an Int32 ros message
+          
+        Returns:
+            True is successfully processed and sent
+            False if not
+        """ 
+        
+        try: 
+            self.dock = dock_message
+            
+        except:
+            # If we cant process the dock number, then return false to 
+            # indicate we didn't get a proper message
+            return False
+        
+        # TODO: Add generating and sending the message. since its infrequent snding here is okay
+        return True
+
+
+    def process_flag_message(self, flag_message):
+        """ 
+        Callback function for the message from the boat on the /flag
+        topic. You should not need to call this directly. It gets called each 
+        time a message is received.
+
+        We'll use it to report the dock in the message
+        
+        Arguments:
+          flag_message : the message received, should be an Int32 ros message
+          
+        Returns:
+            True is successfully processed
+            False if not
+        """ 
+        
+        try: 
+            self.flag = flag_message
+            
+        except:
+            # If we cant process the flag number, then return false to 
+            # indicate we didn't get a proper message
+            return False
+        
+        # TODO: Add generating and sending the message. since its infrequent snding here is okay
+        return True
+
+
     def send_data_and_wait(self, message):
         # TODO: 06/14/19 - JEV - Should we just stay connected and manage 
         #                        disconnecting at the class level rather than
