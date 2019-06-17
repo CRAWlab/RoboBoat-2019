@@ -33,6 +33,7 @@ import threading
 # ROS related imports
 import rospy
 from std_msgs.msg import String
+from std_msgs.msg import Int32
 from sensor_msgs.msg import NavSatFix
 
 # datetime import to use the computer's time as that reported
@@ -104,9 +105,16 @@ class TD_communication(object):
         # Set up the cmd_vel subscriber and register the callback
         rospy.Subscriber("/fix", NavSatFix, self.process_fix_message)
         
-        # Set up the status subscriber and register the callback
-        rospy.Subscriber("/status", String, self.process_status_message)
-
+        # Set up the mode subscriber and register the callback
+        rospy.Subscriber("/mode", String, self.process_status_message)
+        
+        # Set up the dock subscriber and register the callback
+        rospy.Subscriber("/dock", Int32, self.process_dock_message)
+        
+        # Set up the flag subscriber and register the callback
+        rospy.Subscriber("/flag", Int32, self.process_flag_message)
+        
+        
 
     def process_fix_message(self, fix_message):
         """ 
@@ -146,9 +154,9 @@ class TD_communication(object):
             self.longitude = ""
 
 
-    def process_status_message(self, status_message):
+    def process_mode_message(self, status_message):
         """ 
-        Callback function for the message from the boat on the /status
+        Callback function for the message from the boat on the /mode
         topic. You should not need to call this directly. It gets called each 
         time a message is received.
 
@@ -159,11 +167,32 @@ class TD_communication(object):
           status_message : the string message received
           
         Returns:
-            True is successfully sent
+            True is successfully processed
             False if not
         """ 
         
-        # TODO: Decide what our status message is and then how to parse it here
+        # Read the message and convert it to the integer representation 
+        # we need for the TD protocol, 
+        #    0 = remote
+        #    1 = autunomous
+        #    2 = E-stopped
+        #
+        # We convert to all uppercase to make it case insensitive
+        if status_message.upper() == 'REMOTE':
+            self.mode = 0
+        
+        elif status_message.upper() == 'AUTONOMOUS':
+            self.mode = 1
+            
+        elif status_message.upper() == 'STOPPED':
+            self.mode = 2
+            
+        else:
+            # If we don't match a known mode type, then return false to 
+            # indicate we didn't get a proper message
+            return False
+            
+        return True
 
 
     def send_data_and_wait(self, message):
