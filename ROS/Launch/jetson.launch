@@ -1,19 +1,19 @@
 <launch>
+    <!-- Zed Camera -->
+    <include file="$(find zed_wrapped)/launch/zed.launch" />
 
-   <!-- Zed Camera -->
-   <include file="$(find zed_wrapped)/launch/zed.launch" />
-
-   <!-- Lidar -->
-   <include file="$(find urg_node)/launch/urg_lidar.launch" >
+    <!-- Lidar -->
+    <include file="$(find urg_node)/launch/urg_lidar.launch" >
       <arg name="ip_address" value="192.168.0.10" />
-   </include>
+    </include>
 
-   <!-- Transform (needs to be put in package form) -->
-   <include file="$(find tf_node)/launch/tf.launch" />
+    <!-- Transform (needs to be put in package form) -->
+    <include file="$(find tf_node)/launch/tf.launch" />
 
-
-   <!-- Rosbridge -->
-   
-
+    <!-- Rosbridge -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" > 
+        <arg name="port" value="8080"/>
+    </include>
+    
 </launch>
 
