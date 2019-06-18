@@ -106,7 +106,7 @@ class TD_communication(object):
         rospy.Subscriber("/fix", NavSatFix, self.process_fix_message)
         
         # Set up the mode subscriber and register the callback
-        rospy.Subscriber("/mode", String, self.process_status_message)
+        rospy.Subscriber("/mode", String, self.process_mode_message)
         
         # Set up the dock subscriber and register the callback
         rospy.Subscriber("/dock", Int32, self.process_dock_message)
