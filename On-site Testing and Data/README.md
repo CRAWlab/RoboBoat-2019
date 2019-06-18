@@ -53,9 +53,13 @@ topic                                      | Meaning
 
 ## Topics to `rosbag`
 /imu/data
+/imu/rpy
+/imu/mag
 /cmd_vel
 /fix
-/zed/...
+/zed/zed_node/rgb/image_rect_color
+/zed/zed_node/depth/depth_registered 
+/zed/point_cloud/cloud_registered
 /scan
 /odom 
 /mode
@@ -69,25 +73,25 @@ Flag                     | Meaning
 
 So, our `rosbag` commands always begin with the same pieces. We only change how we specify what we want to save/bag:
 
-    rosbag record --output-name=FILENAME --split=10240 (remainder of command)
+    rosbag record --output-name=FILENAME --split --size=10240 (remainder of command)
 
-We can then decide how to define the remainder. The options incldue 
-
-* Listing the topics by what to include, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`
-
-        rosbag record --output-name=FILENAME --split=10240
+We can then decide how to define the remainder. The options include 
 
 * Listing the topics by what to include, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`
 
-        rosbag record --output-name=FILENAME --split=10240 imu/data imu/rpy imu/mag cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/point_cloud/cloud_registered
+        rosbag record --output-name=FILENAME --split --size==10240
+
+* Listing the topics by what to include, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`
+
+        rosbag record --output-name=FILENAME --split --size==10240 imu/data imu/rpy imu/mag cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/point_cloud/cloud_registered
 
 * Using regex to get all the imu data rather than listing it three times, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`. Give the abslute
 
-        rosbag record --output-name=FILENAME --split=10240 --regex imu/.* cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/point_cloud/cloud_registered
+        rosbag record --output-name=FILENAME --split --size==10240 --regex imu/.* cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/point_cloud/cloud_registered
 
 * We can also use regex to exclude topics from the list of those matched using the `-x` flag
 
-        rosbag record --output-name=FILENAME --split=10240 -x "/wide_stereo(.*)" -x "(.*)/points(.*)"
+        rosbag record --output-name=FILENAME --split --size==10240 -x "/wide_stereo(.*)" -x "(.*)/points(.*)"
 
 
 
