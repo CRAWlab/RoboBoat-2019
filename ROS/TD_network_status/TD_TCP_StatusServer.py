@@ -102,7 +102,7 @@ class TD_communication(object):
         # Initialize the node
         rospy.init_node('td_status_sender', anonymous=True)
         
-        # Set up the cmd_vel subscriber and register the callback
+        # Set up the fix subscriber and register the callback
         rospy.Subscriber("/fix", NavSatFix, self.process_fix_message)
         
         # Set up the mode subscriber and register the callback
@@ -152,7 +152,7 @@ class TD_communication(object):
             self.longitude = ""
 
 
-    def process_mode_message(self, status_message):
+    def process_mode_message(self, mode_message):
         """ 
         Callback function for the message from the boat on the /mode
         topic. You should not need to call this directly. It gets called each 
@@ -162,7 +162,7 @@ class TD_communication(object):
         require for each message
         
         Arguments:
-          status_message : the string message received
+          mode_message : the string message received 
           
         Returns:
             True is successfully processed
@@ -176,13 +176,13 @@ class TD_communication(object):
         #    2 = E-stopped
         #
         # We convert to all uppercase to make it case insensitive
-        if status_message.upper() == 'REMOTE':
+        if mode_message.upper() == 'REMOTE':
             self.mode = 0
         
-        elif status_message.upper() == 'AUTONOMOUS':
+        elif mode_message.upper() == 'AUTONOMOUS':
             self.mode = 1
             
-        elif status_message.upper() == 'STOPPED':
+        elif mode_message.upper() == 'STOPPED':
             self.mode = 2
             
         else:
