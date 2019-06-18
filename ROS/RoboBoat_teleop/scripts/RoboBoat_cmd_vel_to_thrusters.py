@@ -238,8 +238,8 @@ class RoboBoat_ThrustMapper():
         rospy.loginfo('Throttle: {}'.format(thrusts / 100.0 + THROTTLE_OFFSET))
         
         # TODO: 05/02/19 - JEV - Do we need to clip throttle commands to +/-1 to account for the OFFSET
-        self.port_stern.throttle = thrusts[0] / 100.0 + THROTTLE_OFFSET
-        self.port_bow.throttle = thrusts[1] / 100.0 + THROTTLE_OFFSET
+        self.port_stern.throttle = -1 * thrusts[0] / 100.0 + THROTTLE_OFFSET
+        self.port_bow.throttle = -1 * thrusts[1] / 100.0 + THROTTLE_OFFSET
         self.stbd_stern.throttle = thrusts[2] / 100.0 + THROTTLE_OFFSET
         self.stbd_bow.throttle = thrusts[3] / 100.0 + THROTTLE_OFFSET
 

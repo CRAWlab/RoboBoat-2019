@@ -1,0 +1,11 @@
+
+<launch>
+
+   <!-- Teleop -->
+   <include file="$(find teleop)/launch/usv_joydrive.launch" />
+
+   <!-- Visualization -->
+   <node pkg="rviz" type="rviz" name="rviz" />
+   
+
+</launch>

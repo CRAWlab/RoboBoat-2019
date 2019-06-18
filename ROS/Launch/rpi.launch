@@ -1,0 +1,10 @@
+<launch>
+
+   <!-- IMU and GPS -->
+   <include file="S(find um7 with GPS)/launch/imu.launch" />
+
+   <!-- Status and E-stop -->
+
+   <!-- Thrust Mapping -->
+
+</launch>
