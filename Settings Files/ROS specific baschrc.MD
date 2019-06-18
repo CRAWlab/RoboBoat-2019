@@ -8,7 +8,7 @@ Add the following lines to the `.bashrc` file in your home (`~`) directory.
     # Define your ROS_HOSTNAME
     export ROS_HOSTNAME=your.ip.address.here
     
-where `your.ip.address.here` is your IP address. If you are adding this to your `.bachrc` file, you should probably have network profile set up with a fixed IP address at this address.
+where `your.ip.address.here` is your IP address. If you are adding this to your `.bachrc` file, you should probably have a network profile set up with a fixed IP address at this address.
 
 The steps to do so should look something like:
 
