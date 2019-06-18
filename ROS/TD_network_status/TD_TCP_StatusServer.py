@@ -94,7 +94,7 @@ class TD_communication(object):
         self.longitude = -81.016561  # Center of the pond according to Google Maps
         self.NS = N                  # We'll always be in the Northern hemisphere
         self.EW = W                  # We'll always be in the Western hemisphere
-        self.TEAM_ID = "ULLAF"       # Update this to reflect ID given by TDs
+        self.TEAM_ID = "ULL"       # Update this to reflect ID given by TDs
         self.mode = ""               # 1=Remote, 2=Autonomous, 3=E-stop
         self.dock_number = ""        # Number of dock identified
         self.flag_number = ""        # Number of flag seen
@@ -113,8 +113,6 @@ class TD_communication(object):
         
         # Set up the flag subscriber and register the callback
         rospy.Subscriber("/flag", Int32, self.process_flag_message)
-        
-        
 
     def process_fix_message(self, fix_message):
         """ 
@@ -218,6 +216,9 @@ class TD_communication(object):
             # If we cant process the dock number, then return false to 
             # indicate we didn't get a proper message
             return False
+            
+        # Now, send the dock message
+        self.send_dock_message()
         
         # TODO: Add generating and sending the message. since its infrequent snding here is okay
         return True
@@ -247,6 +248,9 @@ class TD_communication(object):
             # indicate we didn't get a proper message
             return False
         
+        # Now, send the flag message
+        self.send_flag_message()
+
         # TODO: Add generating and sending the message. since its infrequent snding here is okay
         return True
 
@@ -274,7 +278,7 @@ class TD_communication(object):
                 rospy.loginfo("Message acknolwedged by server.")
             else:
                 error_message = response.split(',')[4]
-                rospy.loginfo("Server Reported Error: {}".format(error_message))
+                rospy.logwarn("Server Reported Error: {}".format(error_message))
 
         except (socket.error):
             rospy.logerror("Could not send data to TD server.")
