@@ -177,9 +177,9 @@ void setup() {
 
     // Wait for the serial monitor to open
     // Be sure to comment this out in application
-//    while (!Serial) {
-//        delay(1);
-//    }
+    //    while (!Serial) {
+    //        delay(1);
+    //    }
     delay(100);
 
     // manual reset
@@ -277,16 +277,16 @@ void loop() {
         
         if (num_missed_heartbeats < MAX_MISSED_HEARTBEATS) {
             //Serial.println("Heartbeat missed");    
-            ;
+            ; // Do nothing here
         }
     }
     
     // Now, read the serial communication with the host CPU
     if (Serial.available() > 0) {
         // get incoming data, which must be terminated with a newline character
-        status_string = Serial.readStringUntil('\n');
-        Serial.print("Status: ");
-        Serial.println(status_string);
+        status_string = Serial.readStringUntil('\r'); // TODO: Should this be /n?
+        //Serial.print("Status: ");
+        //Serial.println(status_string);
     }
     
     // Compare the message received with the the available colors
@@ -387,12 +387,12 @@ void loop() {
     }
     strip.show();  // Update NeoPixel strip
 
-    Serial.print("Status: ");
+    // Serial.print("Status: ");
     if (status_okay) {
-        Serial.println(status_string);
+        Serial.println("$ESTOP,OK");
     }
     else {
-        Serial.println("No heartbeat");
+        Serial.println("$ESTOP,STOPPED");
     }
     
     elapsed_time = millis() - start_time;
