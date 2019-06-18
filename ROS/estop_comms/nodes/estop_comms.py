@@ -25,7 +25,8 @@
 #   * 
 #
 # TODO:
-#   * 
+#   * 06/18/19 - Change port, bps, etc to rosparameters
+#   * 06/18/19 - Convert to proper ROS node
 ###############################################################################
 
 import pyserial
@@ -83,8 +84,13 @@ class LED_status(object):
         
         elif status_message.upper() == 'STOPPED':
             self.LED_color = 'red'
-    
-
+        
+        # terminate the string with a newline
+        LED_color_string = '{}\n'.format(self.LED_color).encode('utf-8')
+        
+        # Then, send it to the microcontroller
+        ser.write(LED_color_string)
+        
 
     def indefinite_loop_through_status(self):
         try:
@@ -94,6 +100,7 @@ class LED_status(object):
                 # are not properly terminated or we aren't receiving any data at
                 # all, then this call will block indefinitely.
                 line = ser.readline()
+                line = line.decode('utf-8')
             
                 # Check the line we get. If we get a message that we are e-stopped,
                 # then we report that as the mode. Other nodes will handle the 
@@ -102,8 +109,8 @@ class LED_status(object):
                     rospy.loginfo('Microcontroller is E-stopped')
                     self.mode_pub.pulish('STOPPED')
                 
-                elif line.upper() == '$ESTOP,OKAY':
-                    rospy.logdebug('Got $ESTOP,OKAY from microcontroller')
+                elif line.upper() == '$ESTOP,OK':
+                    rospy.logdebug('Got $ESTOP,OK from microcontroller')
                 
                 else:
                     rospy.loginfo('Got {} from microcontroller'.format(line))

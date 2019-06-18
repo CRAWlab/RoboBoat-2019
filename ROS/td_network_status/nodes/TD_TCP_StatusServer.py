@@ -27,7 +27,7 @@
 
 # Imports for "pure" TCP communcation with TD server
 import socket
-import socketserver
+import SocketServer
 import threading
 
 # ROS related imports
@@ -45,7 +45,7 @@ TD_IP_ADDRESS = '192.168.0.20'
 TD_PORT = 2390
 
 
-class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):
+class ThreadedTCPRequestHandler(SocketServer.StreamRequestHandler):
     """
     The RequestHandler class for our server.
 
@@ -64,7 +64,7 @@ class ThreadedTCPRequestHandler(socketserver.StreamRequestHandler):
         # to the client
         #self.wfile.write(self.data.upper())
 
-class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     pass
 
 
@@ -92,10 +92,10 @@ class TD_communication(object):
         # TODO: 06/14/19 - JEV - should we change the GPS to empty too?
         self.latitude = 29.151098    # Center of the pond according to Google Maps
         self.longitude = -81.016561  # Center of the pond according to Google Maps
-        self.NS = N                  # We'll always be in the Northern hemisphere
-        self.EW = W                  # We'll always be in the Western hemisphere
-        self.TEAM_ID = "ULL"       # Update this to reflect ID given by TDs
-        self.mode = ""               # 1=Remote, 2=Autonomous, 3=E-stop
+        self.NS = 'N'                # We'll always be in the Northern hemisphere
+        self.EW = 'W'                # We'll always be in the Western hemisphere
+        self.TEAM_ID = "ULL"         # Update this to reflect ID given by TDs
+        self.mode = 1               # 1=Remote, 2=Autonomous, 3=E-stop
         self.dock_number = ""        # Number of dock identified
         self.flag_number = ""        # Number of flag seen
         
@@ -260,7 +260,7 @@ class TD_communication(object):
         #                        disconnecting at the class level rather than
         #                        connecting and disconnecting  each time this 
         #                        method is called?
-        self.sock.connect((self.td_ip_address, td_port))
+        self.sock.connect((self.td_ip_address, self.td_port))
 
         try:
             self.sock.sendall(message)
@@ -375,7 +375,7 @@ class TD_communication(object):
         lat = "{},{}".format(self.latitude, self.NS)
         long = "{},{}".format(self.longitude, self.EW) 
         ID = self.TEAM_ID
-        mode = "{:d}"format(self.mode)
+        mode = "{:d}".format(self.mode)
         
         core_message = "{},{},{},{},{},{},{}".format(header,
                                                      date,
@@ -498,7 +498,7 @@ if __name__ == "__main__":
     # Port 0 means to select an arbitrary unused port
     LOCAL_IP, LOCAL_PORT = "0.0.0.0", 0
 
-    server = ThreadedTCPServer((HOST, PORT), ThreadedTCPRequestHandler)
+    server = ThreadedTCPServer((LOCAL_IP, LOCAL_PORT), ThreadedTCPRequestHandler)
     ip, port = server.server_address
 
     # Start a thread with the server -- that thread will then start one
