@@ -147,7 +147,7 @@ uint32_t med = RED_MED;
 uint32_t high = RED_HIGH;
 
 // A boolean value to keep track of the current status, okay if true
-bool status_okay = true;
+bool status_okay = false;
 
 // A string to hold the status message from the CPU
 String status_string = "green";
@@ -189,17 +189,17 @@ void setup() {
     delay(10);
 
     while (!rf95.init()) {
-        Serial.println("LoRa radio init failed");
+        //Serial.println("LoRa radio init failed");
         while (1);
     }
-    Serial.println("LoRa radio init OK!");
+    //Serial.println("LoRa radio init OK!");
 
     // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
     if (!rf95.setFrequency(RF95_FREQ)) {
-        Serial.println("setFrequency failed");
+        //Serial.println("setFrequency failed");
         while (1);
     }
-    Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
+    //Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
 
     // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
 
@@ -230,7 +230,7 @@ void loop() {
     if (rf95.available()) {
         // Add a linespace between each heartbeat loop
         // TODO: 05/16/19 - JEV - Comment out in application
-        Serial.println("");
+        //Serial.println("");
     
         // Should be a message for us now
         uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
@@ -248,7 +248,7 @@ void loop() {
             // If it doesn't match, increment the num_missed_heartbeats counter
             // If it does, reset the counter and send an acknowledgement message
             if (strncmp((char*)buf, HEARTBEAT_MESSAGE, HEARTBEAT_MESSAGE_LENGTH) != 0) {
-              Serial.println("Heartbeat didn't match.");
+              //Serial.println("Heartbeat didn't match.");
               num_missed_heartbeats = num_missed_heartbeats + 1;
             }
             else {
@@ -259,14 +259,14 @@ void loop() {
                 status_okay = true;
 
                 // This will print the signal strength of the last message received.
-                Serial.print("RSSI: ");
-                Serial.println(rf95.lastRssi(), DEC);
+                //Serial.print("RSSI: ");
+                //Serial.println(rf95.lastRssi(), DEC);
                 
                 // Send a reply
                 uint8_t data[] = "$UL_ACK";
                 rf95.send(data, sizeof(data));
                 rf95.waitPacketSent();
-                Serial.println("Sent a reply");
+                // Serial.println("Sent a reply");
                 digitalWrite(LED, LOW);
             }
         }
@@ -327,8 +327,8 @@ void loop() {
         digitalWrite(RELAY_PIN, HIGH);
     }
     else if (num_missed_heartbeats == MAX_MISSED_HEARTBEATS) {
-        Serial.println("Heartbeat missed");
-        Serial.println("Missed too many heartbeats!!!");
+        //Serial.println("Heartbeat missed");
+        //Serial.println("Missed too many heartbeats!!!");
         digitalWrite(LED, HIGH);
 
         status_okay = false;
