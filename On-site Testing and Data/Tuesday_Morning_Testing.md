@@ -41,3 +41,19 @@ The "script" for Tuesday (June 18) testing at 2019 International RoboBoat. There
 
 ### Software Process
 * Start `rosbag`
+* On Raspberry Pi
+
+    python ~/roboboat_ws/src/estop_comms/nodes/estop_comms.py 
+    
+    python ~/roboboat_ws/src/imu_um7/src/imu_um7_node_v2.py
+    
+* On shore computer acccording to current mode
+
+    rostopic pub -r 1 -l /mode std_msgs/String REMOTE
+    
+    rostopic pub -r 1 -l /mode std_msgs/String AUTONOMOUS
+
+    rostopic pub -r 1 -l /mode std_msgs/String STOPPED
+    
+    
+
