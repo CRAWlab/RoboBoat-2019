@@ -83,7 +83,7 @@ We can then decide how to define the remainder. The options include
 
 * Listing the topics by what to include, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`
 
-        rosbag record --output-name=FILENAME --split --size=10240 imu/data imu/rpy imu/mag cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color zed/zed_node/depth/depth_registered zed/point_cloud/cloud_registered
+        rosbag record --output-name=FILENAME --split --size=10240 imu/data imu/rpy imu/mag cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color zed/zed_node/depth/depth_registered zed/zed_node/point_cloud/cloud_registered
 
 * Using regex to get all the imu data rather than listing it three times, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`. Give the abslute
 
@@ -94,8 +94,23 @@ We can then decide how to define the remainder. The options include
         rosbag record --output-name=FILENAME --split --size=10240 -x "/wide_stereo(.*)" -x "(.*)/points(.*)"
 
 
+# Saving to USB drive on Jetson  
+The path to the root of the USB flash drive is:
+
+    /media/crawlab/ROBOBOAT/
+
+So, to bag files to the USB drive, the filename should begin with that:
+
+    rosbag record --output-name=/media/crawlab/ROBOBOAT/bag_filename.bag --split --size=10240 (remainder of command)
 
 
-## Data to Collect
+# Saving to the micro-sd card on the Jetson  
+The path to the micro-sd card on the Jetson is:
+
+    /media/crawlab/9016-4EF8/
+    
+So, to bag files to the USB drive, the filename should begin with that:
+
+    rosbag record --output-name=/media/crawlab/9016-4EF8/bag_filename.bag --split --size=10240 (remainder of command)
 
 
