@@ -29,7 +29,7 @@
 #   * 06/18/19 - Convert to proper ROS node
 ###############################################################################
 
-import pyserial
+import serial
 
 # ROS related imports
 import rospy
@@ -41,16 +41,16 @@ class LED_status(object):
     information to and from the LoRa-based E-stop system's microcontroller
     """
     
-    def __init__(self, port, bps=115200, timeout=0.01):
+    def __init__(self, port, bps=115200, timeout=0.1):
         # Open the serial port
-        self.ser = serial.Serial(port, bps, timeout)
+        self.ser = serial.Serial(port, bps, timeout=timeout)
 
         # Initialize the node
         rospy.init_node('LED_status', anonymous=True)
     
         # Set up the ROS subscriber for mode and publisher for mode
         # The publisher is latched - 
-        self.mode_pub = rospy.Publisher('/mode', String, latch=True)
+        self.mode_pub = rospy.Publisher('/mode', String, queue_size=1, latch=True)
         mode_sub = rospy.Subscriber("/mode", String, self.process_mode_message)
 
         self.LED_color = 'yellow'
@@ -75,21 +75,22 @@ class LED_status(object):
             False if not
         """ 
     
+        print(status_message.data.upper())
         # We convert to all uppercase to make it case insensitive
-        if status_message.upper() == 'REMOTE':
+        if status_message.data.upper() == 'REMOTE':
             self.LED_color = 'yellow'
     
-        elif status_message.upper() == 'AUTONOMOUS':
+        elif status_message.data.upper() == 'AUTONOMOUS':
             self.LED_color = 'green'
         
-        elif status_message.upper() == 'STOPPED':
+        elif status_message.data.upper() == 'STOPPED':
             self.LED_color = 'red'
         
         # terminate the string with a newline
-        LED_color_string = '{}\n'.format(self.LED_color).encode('utf-8')
+        LED_color_string = '{}\r\n'.format(self.LED_color).encode('utf-8')
         
         # Then, send it to the microcontroller
-        ser.write(LED_color_string)
+        self.ser.write(LED_color_string)
         
 
     def indefinite_loop_through_status(self):
@@ -99,7 +100,7 @@ class LED_status(object):
                 # over the serial connection. If we are not, either because they
                 # are not properly terminated or we aren't receiving any data at
                 # all, then this call will block indefinitely.
-                line = ser.readline()
+                line = self.ser.readline()
                 line = line.decode('utf-8')
             
                 # Check the line we get. If we get a message that we are e-stopped,
@@ -112,11 +113,14 @@ class LED_status(object):
                 elif line.upper() == '$ESTOP,OK':
                     rospy.logdebug('Got $ESTOP,OK from microcontroller')
                 
-                else:
-                    rospy.loginfo('Got {} from microcontroller'.format(line))
-
+#                 else:
+#                     rospy.loginfo('Got {} from microcontroller'.format(line))
 
                 self.rate.sleep()
+
+        except (KeyboardInterrupt, SystemExit):
+            rospy.loginfo('Quit e-stop comms.')
+            raise
         
         finally:
             rospy.logwarn('Communication with LoRa controller stopped.')
@@ -129,7 +133,7 @@ class LED_status(object):
 if __name__ == "__main__":
     # Define the serial port setup
     # NOTE: Serial port will have to change based on configuration
-    PORT = '/dev/tty.usbserial-FTGSQ1IM'
+    PORT = '/dev/ttyACM0'
 
     # define the serial communication parameters, 8 bits, no parity, 1 stop bit
     BPS = 115200

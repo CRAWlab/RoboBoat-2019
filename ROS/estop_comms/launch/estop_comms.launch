@@ -4,6 +4,6 @@
 
     <node pkg="estop_comms" type="estop_comms.py" name="estop_comms" output="screen" respawn="true">
         <param name="port" type="string" value="$(arg port)"/>
-        <param name="port" type="string" value="$(arg bps)"/>
+        <param name="bps" type="string" value="$(arg bps)"/>
     </node>
 </launch>
