@@ -87,7 +87,7 @@ We can then decide how to define the remainder. The options include
 
 * Using regex to get all the imu data rather than listing it three times, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`. Give the abslute
 
-        rosbag record --output-name=FILENAME --split --size=10240 --regex imu/.* cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/point_cloud/cloud_registered
+        rosbag record --output-name=FILENAME --split --size=10240 --regex imu/.* cmd_vel fix scan odom mode dock tf tf_static zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/zed_node/point_cloud/cloud_registered
 
 * We can also use regex to exclude topics from the list of those matched using the `-x` flag
 
