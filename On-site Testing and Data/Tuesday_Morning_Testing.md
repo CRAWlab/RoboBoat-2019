@@ -47,6 +47,8 @@ The "script" for Tuesday (June 18) testing at 2019 International RoboBoat. There
     
     python ~/roboboat_ws/src/imu_um7/src/imu_um7_node_v2.py
     
+    python3 ~/Test/src/thrust_map/src/RoboBoat_cmd_vel_to_thrusters.py
+    
 * On shore computer acccording to current mode
 
     rostopic pub -r 1 -l /mode std_msgs/String REMOTE
