@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package>
+  <name>roboboat_viz</name>
+  <version>0.0.1</version>
+  <description>Visualization configuration for 2019 RoboBoat entry</description>
+
+  <author email="joshua.vaughan@louisiana.edu">Joshua Vaughan</author>
+  <author email="joshua.vaughan@louisiana.edu">Joshua Vaughan</author>
+
+  <maintainer email="joshua.vaughan@louisiana.edu">Joshua Vaughan</maintainer>
+  <maintainer email="joshua.vaughan@louisiana.edu">Joshua Vaughan</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://www.ucs.louisiana.edu/~jev9637/research/RoboBoat_2019.html</url>
+  <url type="bugtracker">https://github.com/CRAWlab/RoboBoat-2019/issues</url>
+  <url type="repository">https://github.com/CRAWlab/RoboBoat-2019</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roslaunch</build_depend>
+
+  <run_depend>roboboat_description</run_depend>
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>rviz_imu_plugin</run_depend>
+
+  <export>
+  </export>
+</package>
