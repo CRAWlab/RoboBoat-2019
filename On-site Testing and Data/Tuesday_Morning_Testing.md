@@ -49,6 +49,8 @@ The "script" for Tuesday (June 18) testing at 2019 International RoboBoat. There
     
     python3 ~/Test/src/thrust_map/src/RoboBoat_cmd_vel_to_thrusters.py
     
+    rostopic pub -r 1 -l /mode std_msgs/String REMOTE
+    
 * On shore computer acccording to current mode
 
     rostopic pub -r 1 -l /mode std_msgs/String REMOTE
@@ -57,5 +59,27 @@ The "script" for Tuesday (June 18) testing at 2019 International RoboBoat. There
 
     rostopic pub -r 1 -l /mode std_msgs/String STOPPED
     
-    
+* To check temperature of Raspberry Pi
+Using a script based on that at [this link](https://www.cyberciti.biz/faq/linux-find-out-raspberry-pi-gpu-and-arm-cpu-temperature-command/).
 
+The script a bash script:
+
+    #!/bin/bash
+
+    cpu=$(</sys/class/thermal/thermal_zone0/temp)
+
+    echo ""
+    echo "$(date) @ $(hostname)"
+    echo "------------------------------"
+    echo "CPU: temp=$((cpu/1000))'C"
+    echo "GPU: $(/opt/vc/bin/vcgencmd measure_temp)"
+    echo ""
+
+
+On the Raspberry Pi, it's saved in `/home/ubuntu/RoboBoat-2019/Python Scripts/Utility Scripts` as `pi_temp.sh` so, it can be run by first `cd`-ing to the proper directory:
+
+    cd "/home/ubuntu/RoboBoat-2019/Python Scripts/Utility Scripts"
+
+then running the command:
+
+    sudo ./pi_temp.sh
