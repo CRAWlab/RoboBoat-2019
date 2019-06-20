@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>roboboat_navigation</name>
+  <version>0.0.1</version>
+  <description>Autonomous mapping and navigation demos for the CRAWLAB RoboBoat</description>
+
+  <author email="joshua.vaughan@louisiana.edu">Joshua Vaughan</author>
+  <author email="joshua.vaughan@louisiana.edu">Joshua Vaughan</author>
+
+  <maintainer email="joshua.vaughan@louisiana.edu">Joshua Vaughan</maintainer>
+  <maintainer email="joshua.vaughan@louisiana.edu">Joshua Vaughan</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://www.ucs.louisiana.edu/~jev9637/research/RoboBoat_2019.html</url>
+  <url type="bugtracker">https://github.com/CRAWlab/RoboBoat-2019/issues</url>
+  <url type="repository">https://github.com/CRAWlab/RoboBoat-2019</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  <run_depend>amcl</run_depend>
+  <run_depend>frontier_exploration</run_depend>
+  <run_depend>gmapping</run_depend>
+  <run_depend>map_server</run_depend>
+  <run_depend>move_base</run_depend>
+  <run_depend>navfn</run_depend>
+  <run_depend>base_local_planner</run_depend>
+  <run_depend>dwa_local_planner</run_depend>
+
+  <export>
+  </export>
+</package>
