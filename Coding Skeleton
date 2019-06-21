@@ -1,125 +1,120 @@
 # Maintaining Heading
-			1. Locate Red and Green Buoys
-			# Here the boat will identify the red buoy and check that it is to the left of the boat
-			# Here the boat will identify the green buoy and check that it is to the right of the boat
-			# Here it will update the map and know where the buoys are in space
-			2. Align with buoys (square up)
-			3. Move Forward
-			4. Check yaw (make sure it is unchanged)
-			# Here the boat will drop a way point in the center of the buoy and travel towards the waypoint
-			# Here the boat will start the process over by looking for the next set of buoys
-			5. Check red and green orientation
-			6. Move forward (yaw unchanged)
+	1. Locate Red and Green Buoys
+# Here the boat will identify the red buoy and check that it is to the left of the boat
+# Here the boat will identify the green buoy and check that it is to the right of the boat
+# Here it will update the map and know where the buoys are in space
+	2. Align with buoys (square up)
+	3. Move Forward
+	4. Check yaw (make sure it is unchanged)
+# Here the boat will drop a way point in the center of the buoy and travel towards the waypoint
+# Here the boat will start the process over by looking for the next set of buoys
+	5. Check red and green orientation
+	6. Move forward (yaw unchanged)
 			
-
-			# Circumnavigation
-			# If travelling in the clockwise direction, it is important that the boat stay oriented to the left of the buoys. 
-			# (and vice versa if traveling counterclockwise).
-			1. Locate four buoys
-			# Here the boat will search the area for at least two of the four buoys.
-			2. Position base on left of buoys
-			# Once at least two are found the boat will orient itself so that the buoys are on its right side.
-			# Now it will store the starting position of itself
-			3. Circle buoy clockwise 90o
-			# First the boat will drop a way point to the left and a little past the buoy 
-			# Now it will travel to that waypoint and check it has gone past the buoy far enough.
-			# Now it will spin 90 degrees clockwise 
-			4. (Repeat 3x)
-			# Then it will repeat the process until it has gotten to the starting position of the task
-			5. Exit
-			
-
+# Circumnavigation
+# If travelling in the clockwise direction, it is important that the boat stay oriented to the left of the buoys. 
+# (and vice versa if traveling counterclockwise).
+	1. Locate four buoys
+# Here the boat will scan the area for the four buoys.
+# Here the boat will use object recognition to identify the buoys
+# The boat will update its maps and begin localization.
+	2. Position base on left of buoys
+# Orient itself so that the buoys are on its right side.
+# Now it will store the starting position of itself next to the first buoy
+	3. Circle buoy clockwise 90o
+# First the boat will drop a way point to the left and a little past the next buoy 
+# Now it will travel to that waypoint 
+# Now it will spin 90 degrees clockwise 
+	4. (Repeat 3x)
+# Then it will repeat the process until it has gotten to the starting position of the task
+	5. Exit
 			OR
 		@@ -46,30 +41,87 @@ OR
 			
 
-			# Slalom Maneuver
-			1. Locate buoys
-			# Here the boat will scan the area for bouys (probably a line of buoys)
-			2. Align buoys so all are in center
-			3. Check for red 
-			# Here the boat will look for the first red buoy 
-			# Here the boat will find were it is relative to the red buoy
-			4. Start to circle from right
-			# Here the boat will drop a way point to the right of the red buoy
-			# Here the boat will travel to the waypoint
-			# Now the boat will scan for the next green buoy and update its map
-			5. Check red and green orientation (red left / green right)
-			# Here the boat will drop a waypoint between the previous red and current green buoys
-			6. Move through and around the left
-			# Here the boat will add a waypoint to the left of the green buoy
-			# Now it will travel to the waypoint
-			7. Repeat until finding can buoy
-			# the boat will repeat the scan for the next red buoy and travel around the right 
-			# Once it gets to the last (fourth) buoy, it scans for the circle can buoy
-			# It identifies the circle can buoy
-			8. Circle can buoy
-			# Set a waypoint on the backside of the circle can
-			# travel to next waypoint
-			9. Check red and green orientation 
-			# if the buoy is green (which it should be at this point) place a waypoint to the left of the buoy
-			# move to way point
-			# Scan for red buoy
-			# Place waypoint to right of buoy
-			# move to way point
-			10. Finish slalom
-			11. Exit course
+# Slalom Maneuver
+	1. Locate buoys
+# Here the boat will scan the area for bouys (probably a line of buoys)
+# The boat will scan and build the map for the course
+# The boat will identify all red (2), green (2), and circle can (1) buoys in the course
+	2. Travel to the beginning of the course
+# Set a waypoint at the end of the task course
+# Travel to the waypoint and finish pose facing the first bouy
+	3.  Set a path for the course
+# Here the boat will set waypoints for the course 
+# Red buoys will receive a waypoint on the right with a orientation of 135 degrees from horizontal X axis
+# Green buoys will receive a waypoint on the left with a orientation of 45 degrees from horizontal X axis
+# An additional waypoint will be dropped at the midpoints of each bouy
+# The boat will travel to each waypoint starting on the right, moving to the midpoint, to the left, and then moving to the midpoint again.
+	7. Repeat until finding can buoy 
+# Once it gets to the last (fourth) buoy, it scans for the circle can buoy
+# It identifies the circle can buoy
+	8. Circle can buoy
+# Set a waypoint on the right, backside, and left of the circle can
+# travel to waypoints with last orientation at 270 degrees from the horizontal X axis
+	9. Check red and green orientation 
+# Here the boat will set waypoints for the course 
+# Red buoys will receive a waypoint on the right with a orientation of 315 degrees from horizontal X axis
+# Green buoys will receive a waypoint on the left with a orientation of 225 degrees from horizontal X axis
+# An additional waypoint will be dropped at the midpoints of each bouy
+# The boat will travel to each waypoint starting on the left, moving to the midpoint, to the right, and then moving to the midpoint again.
+	10. Finish slalom
+	11. Exit course
 			
 
-			# Autonomous Navigation
-			1. Locate Red and Green Buoys
-			# Here the boat will identify the red buoy and check that it is to the left of the boat
-			# Here the boat will identify the green buoy and check that it is to the right of the boat
-			# Here it will update the map and know where the buoys are in space
-			2. Align with buoys (square up)
-			3. Move Forward
-			4. Check yaw (make sure it is unchanged)
-			# Here the boat will drop a way point in the center of the buoy and travel towards the waypoint
-			# Here the boat will start the process over by looking for the next set of buoys
-			5. Check red and green orientation
-			6. Move forward (yaw unchanged)
+# Autonomous Navigation
+	1. Locate Red and Green Buoys
+# Here the boat will scan and look for the 4 gate buoys 
+# Once located and identified, update map and localize base in space
+# Here it will know where the buoys are in space
+	2. Set waypoints
+# The boat will set a waypoint at the midpoints of the two sets of buoys
+# Set a waypoint every ten feet towards the second set of buoys
+	3. Move Forward
+# Here the boat travels toward the waypoints
+# Once it is past the second set it will wait for the Gps coordinates of the first challenge
+		
+
+# Find the Path
+	1. Circle environment and map out the buoys
+# Here the boat will locate the central can buoy using the lidar and camera
+# Once the can buoy is located and identified the boat will scan the perimeter of the challenge and save a map of the course
+	2. Find a good path toward the center of the environment
+# When the perimeter scan is finished, the boat will drop a waypoint in the center of the mess of buoys
+	3. get to the center without touching any other buoys
+# The boat travels to the waypoint in the mess of buoys while avoiding obstacles
+	4. Once in the center find the central can buoy
+# Locate can buoy using laser and camera
+# Update map with central can location
+	5. Locate and circle around the can buoy
+	6. Exit out of the environment
+# Follow entrance path to exit the mess of buoys
+	7. Exit course
 			
 
-			# Find the Path
-			1. Circle environment and map out the buoys
-			# Here the boat will locate the central can buoy using the lidar and camera
-			# Once the can buoy is located and identified the boat will scan the perimeter of the challenge and save a map of the course
-			2. Find a good path toward the center of the environment
-			# When the perimeter scan is finished, the boat will drop a waypoint in the center of the mess of buoys
-			3. get to the center without touching any other buoys
-			# The boat travels to the waypoint in the mess of buoys while avoiding obstacles
-			4. Once in the center find the central can buoy
-			# Locate can buoy using laser and camera
-			# Update map with central can location
-			5. Locate and circle around the can buoy
-			6. Exit out of the environment
-			# Follow entrance path to exit the mess of buoys
-			7. Exit course
-			
-
-			# Docking
-			1. Enter gate buoys
-			# Here the boat will go to the designated GPS coordinate for the docking challenge. 
-			2. Locate dock 
-			# Here the boat will scan for the dock and recognize it as such
-			3. Move X distance from dock
-			# Here the boat will follow the line perpendicular to the midpoint of the dock 
-			4. Orent perpendicular to dock
-			# Here the boat will orient 
-			5. Find edge of dock
-			6. Travel parallel to edge of dock plus X distance further
-			7. Turn around (yaw)
-			8. Deploy hydrophones (if not already done)
-			9. Full speed forward for X seconds
-			10. Kill thrusters
-			11. Active hydrophones
-			12. Listen and map out strongest signal distance
-			13. Raise hydrophones
-			14. Orient perpendicular to dock
-			15. Move to calculated docking (sway)
-			16. Locate Symbol
-			17. Align Straight with symbol
-			18. Pause for X seconds
-			19. Reverse out of dock
-			20. Exit course
+# Docking
+	1. Enter gate buoys
+# Here the boat will go to the designated GPS coordinate for the docking challenge. 
+	2. Locate dock 
+# Here the boat will scan for the dock and recognize it as such
+	3. Move X distance from dock
+# Here the boat will follow the line perpendicular to the midpoint of the dock 
+	4. Orent perpendicular to dock
+# Here the boat will orient 
+5. Find edge of dock
+6. Travel parallel to edge of dock plus X distance further
+7. Turn around (yaw)
+8. Deploy hydrophones (if not already done)
+9. Full speed forward for X seconds
+10. Kill thrusters
+11. Active hydrophones
+12. Listen and map out strongest signal distance
+13. Raise hydrophones
+14. Orient perpendicular to dock
+15. Move to calculated docking (sway)
+16. Locate number
+17. Align Straight with symbol
+18. Pause for X seconds
+19. Reverse out of dock
+20. Exit course
 
