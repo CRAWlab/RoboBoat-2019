@@ -1,4 +1,4 @@
-controller_frequency: 5.0
+controller_frequency: 0.0   # Changes to 0 based on http://answers.ros.org/question/247116/how-can-i-reduce-drift-in-my-robots-trajectory/
 recovery_behaviour_enabled: true
 
 NavfnROS:
