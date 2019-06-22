@@ -1,6 +1,8 @@
 #!/bin/sh
-tmux new-session -d -n 'main'
-tmux new-window -n 'estop'
+cd ~/roboboat_ws
+source ~/roboboat_ws/devel/setup.bash
+tmux new-session -s 'main' -d
+tmux rename-window 'estop'
 tmux new-window -n 'imu'
 tmux new-window -n 'thrust'
 tmux new-window -n 'TD'
