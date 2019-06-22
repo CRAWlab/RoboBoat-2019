@@ -78,17 +78,17 @@ So, our `rosbag` commands always begin with the same pieces. We only change how 
 
 We can then decide how to define the remainder. The options include 
 
-* Listing the topics by what to include, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`
+* Listing the topics by what to include, splitting into 4000mb (4gB) chunks, and saving to `FILE_NAME`
 
         rosbag record --output-name=FILENAME --split --size=4000
 
-* Listing the topics by what to include, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`
+* Listing the topics by what to include, splitting into 4000mb (4gB) chunks, and saving to `FILE_NAME`
 
-        rosbag record --output-name=FILENAME --split --size=4000 imu/data imu/rpy imu/mag cmd_vel fix scan zed_scan odom mode dock tf tf_static /zed/zed_node/odom zed/zed_node/rgb/image_rect_color zed/zed_node/depth/depth_registered zed/zed_node/point_cloud/cloud_registered
+        rosbag record --output-name=FILENAME --split --size=4000 imu/data imu/rpy imu/mag cmd_vel fix scan zed_scan odom mode dock tf tf_static /zed/zed_node/odom zed/zed_node/rgb/image_rect_color zed/zed_node/depth/depth_registered zed/zed_node/point_cloud/cloud_registered /move_base/local_costmap/costmap /move_base/global_costmap/costmap
 
-* Using regex to get all the imu data rather than listing it three times, splitting into 10240mb (10gB) chunks, and saving to `FILE_NAME`. Give the abslute
+* Using regex to get all the imu data rather than listing it three times, splitting into 4000mb (4gB) chunks, and saving to `FILE_NAME`. Give the abslute
 
-        rosbag record --output-name=FILENAME --split --size=4000- --regex imu/.* cmd_vel fix scan zed_scan odom mode dock tf tf_static /zed/zed_node/odom zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/zed_node/point_cloud/cloud_registered
+        rosbag record --output-name=FILENAME --split --size=4000- --regex imu/.* cmd_vel fix scan zed_scan odom mode dock tf tf_static /zed/zed_node/odom zed/zed_node/rgb/image_rect_color /zed/zed_node/depth/depth_registered zed/zed_node/point_cloud/cloud_registered /move_base/local_costmap/costmap /move_base/global_costmap/costmap
 
 * We can also use regex to exclude topics from the list of those matched using the `-x` flag
 
@@ -110,7 +110,7 @@ The path to the micro-sd card on the Jetson is:
 
     /media/crawlab/9016-4EF8/
     
-So, to bag files to the USB drive, the filename should begin with that:
+So, to bag files to the micro-sd card, the filename should begin with that:
 
     rosbag record --output-name=/media/crawlab/9016-4EF8/bag_filename.bag --split --size=4000 (remainder of command)
     
