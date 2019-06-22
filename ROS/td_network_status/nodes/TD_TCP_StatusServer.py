@@ -41,8 +41,8 @@ from sensor_msgs.msg import NavSatFix
 import datetime
 
 # Change this address and port to match those provided by the technical direcotrs
-TD_IP_ADDRESS = '192.168.0.20'
-TD_PORT = 2390
+TD_IP_ADDRESS = 'robot.server'
+TD_PORT = 9000
 
 
 class ThreadedTCPRequestHandler(SocketServer.StreamRequestHandler):
