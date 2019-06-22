@@ -1,15 +1,15 @@
-footprint: [[-0.5, -0.33], [-0.5, 0.33], [0.5, 0.33], [0.5, -0.33]]
+footprint: [[-0.75, -0.43], [-0.75, 0.43], [0.75, 0.43], [0.75, -0.43]]
 footprint_padding: 0.01
 
 robot_base_frame: base_link
-update_frequency: 4.0
-publish_frequency: 3.0
-transform_tolerance: 0.5
+update_frequency: 4.0       # Frequency for the map to be updated (Hz)
+publish_frequency: 3.0      # Frequency to publish display information (Hz)
+transform_tolerance: 0.5    # Delay to allow transform information (s)
 
-resolution: 0.05
+resolution: 0.05     # Map resolution in m
 
-obstacle_range: 5.5
-raytrace_range: 6.0
+obstacle_range: 5.5  # Maximum range to consider (m)
+raytrace_range: 0.5  # Minimum range to consider? (m)  
 
 #layer definitions
 static:
@@ -17,8 +17,14 @@ static:
     subscribe_to_updates: true
 
 obstacles_laser:
-    observation_sources: laser
+    observation_sources: laser zed_laser
     laser: {data_type: LaserScan, clearing: true, marking: true, topic: scan, inf_is_valid: true}
-
+    zed_laser: {data_type: LaserScan, clearing: true, marking: true, topic: zed_scan, inf_is_valid: true}
+    
+obstacles_pointcount:
+    observation_sources: zed_point_cloud
+    zed_point_cloud: {data_type: PointCloud, topic: zed/zed_node/point_could/cloud_registered, marking: true, clearing: true}
+    # may need to add sensor_frame: frame_name, above
+    
 inflation:
-    inflation_radius: 1.0
+    inflation_radius: 0.25   # Added buffer around cells (m)

@@ -5,3 +5,4 @@ track_unknown_space: true
 plugins:
   - {name: obstacles_laser,           type: "costmap_2d::ObstacleLayer"}
   - {name: inflation,                 type: "costmap_2d::InflationLayer"}
+  - {name: obstacles_pointcount,      type: "costmap_2d::ObstacleLayer"}

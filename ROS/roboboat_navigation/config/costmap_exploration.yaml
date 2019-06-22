@@ -7,6 +7,7 @@ plugins:
 - {name: explore_boundary,    type: "frontier_exploration::BoundedExploreLayer"}
 # Can disable sensor layer if gmapping is fast enough to update scans
 - {name: obstacles_laser,     type: "costmap_2d::ObstacleLayer"}
+- {name: obstacles_pointcount,      type: "costmap_2d::ObstacleLayer"}
 - {name: inflation,           type: "costmap_2d::InflationLayer"}
 
 explore_boundary:
