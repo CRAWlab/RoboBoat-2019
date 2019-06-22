@@ -25,11 +25,11 @@ imu0_differential: false
 imu0_queue_size: 10
 imu0_remove_gravitational_acceleration: true
 
-odomGPS: /odometry/gps
-odomGPS_config: [true, true, false,
+odom1: /odometry/gps
+odom1_config: [true, true, false,
                  false, false, false,
                  false, false, false,
                  false, false, false,
                  false, false, false]
-odomGPS_differential: false
-odomGPS_queue_size: 10
+odom1_differential: false
+odom1_queue_size: 10
