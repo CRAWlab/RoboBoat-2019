@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="rosbag" type="play" name="rosbag" required="true" args="/mnt/hgfs/RoboBoat\ bag\ files/Thursday/afternoon/findpaththurs_an1_0.bag"/>
+  
+  <node name="extract" pkg="image_view" type="extract_images" respawn="false" required="true" output="screen" cwd="ROS_HOME">
+    <remap from="image" to="zed/zed_node/rgb/image_rect_color"/>
+  </node>
+
+</launch>
