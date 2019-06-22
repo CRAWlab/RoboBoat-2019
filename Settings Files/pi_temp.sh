@@ -1,8 +1,9 @@
 #!/bin/bash
 
-while :
+while true
     do
-        echo -e "\033[2J\033[;H"
+        clear
+        
         cpu=$(</sys/class/thermal/thermal_zone0/temp)
 
         echo ""
