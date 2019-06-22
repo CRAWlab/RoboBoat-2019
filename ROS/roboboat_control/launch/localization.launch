@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+  <include file="$(find roboboat_control)/launch/zed_localization.launch">
+  </include>  
+  
+  <include file="$(find roboboat_control)/launch/gps_localization.launch">
+  </include>
+  
+
+</launch>  
+  

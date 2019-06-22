@@ -1,6 +1,6 @@
 odom_frame: odom
 base_link_frame: base_link
-world_frame: odom
+world_frame: map
 
 two_d_mode: true
 
@@ -24,3 +24,12 @@ imu0_config: [false, false, false,
 imu0_differential: false
 imu0_queue_size: 10
 imu0_remove_gravitational_acceleration: true
+
+odomGPS: /odometry/gps
+odomGPS_config: [true, true, false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false,
+                 false, false, false]
+odomGPS_differential: false
+odomGPS_queue_size: 10

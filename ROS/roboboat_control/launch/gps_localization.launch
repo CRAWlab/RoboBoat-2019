@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+  
+  <include file="$(find roboboat_control)/launch/gps_navsat_transform.launch">
+  </include>
+  
+  <!-- Start EKF for localization -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_gps_localization">
+    <rosparam command="load" file="$(find roboboat_control)/config/gps_localization.yaml" />
+  </node>
+
+</launch>  
+  
