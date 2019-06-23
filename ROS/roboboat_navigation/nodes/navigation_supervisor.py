@@ -25,45 +25,50 @@ import rospy
 import actionlib
 import numpy as np
 
+from std_msgs.msg import String
+from geometry_msgs.msg import PoseStamped
+from sensor_msgs.msg import NavSatFix, NavSatStatus
+from geometry_msgs.msg import Quaternion
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from actionlib_msgs.msg import *
 
 mode_pub = rospy.Publisher('/mode', String, queue_size=1, latch=True)
 
 # We'll define the course elements withing a dictionary to make them easy to call
 # in the script
-course = {'A': {'speedgate_waypoint', [29.15166, -81.01732],
-                'speedgate_heading', 330.0,
-                'autodocking_waypoint', [29.15165, -81.01716],
-                'findthepath_waypoint', [29.15148, -81.01705],
-                'raisetheflag_waypoint', [29.15158, -81.01710],
-                'dock', [29.1513, -81.0175],
-                'coursemarker_1', [29.15141, -81.01679],
-                'coursemarker_2', [29.15181, -81.01714],
-                'coursemarker_3', [29.15164, -81.01740],
-                'coursemarker_4', [29.15136, -81.01731]},
-          'B', {'speedgate_waypoint', [29.15195, -81.01638],
-                'autodocking_waypoint', [29.15208, -81.01660],
-                'findthepath_waypoint', [29.15182, -81.01672],
-                'raisetheflag_waypoint', [29.15198, -81.01659],
-                'dock', [29.1519, -81.0162],
-                'coursemarker_1', [29.15173, -81.01675],
-                'coursemarker_2', [29.15198, -81.01695],
-                'coursemarker_3', [29.15217, -81.01649],
-                'coursemarker_4', [29.15195, -81.01633]},
-          'C', {'speedgate_waypoint', [29.15154, -81.01610],
-                'autodocking_waypoint ', [29.15125, -81.01597],
-                'findthepath_waypoint ', [29.15137, -81.01626],
-                'raisetheflag_waypoint ', [29.15133, -81.01613],
-                'dock', [29.1519, -81.0162],
-                'coursemarker_1', [29.15098, -81.01620],
-                'coursemarker_2', [29.15139, -81.01637],
-                'coursemarker_3', [29.15165, -81.01608],
-                'coursemarker_4', [29.15123, -81.01585]}}
+# course = {'A': {'speedgate_waypoint', [29.15166, -81.01732],
+#                 'speedgate_heading', 330.0,
+#                 'autodocking_waypoint', [29.15165, -81.01716],
+#                 'findthepath_waypoint', [29.15148, -81.01705],
+#                 'raisetheflag_waypoint', [29.15158, -81.01710],
+#                 'dock', [29.1513, -81.0175],
+#                 'coursemarker_1', [29.15141, -81.01679],
+#                 'coursemarker_2', [29.15181, -81.01714],
+#                 'coursemarker_3', [29.15164, -81.01740],
+#                 'coursemarker_4', [29.15136, -81.01731]}},
+#           'B': {'speedgate_waypoint', [29.15195, -81.01638],
+#                 'autodocking_waypoint', [29.15208, -81.01660],
+#                 'findthepath_waypoint', [29.15182, -81.01672],
+#                 'raisetheflag_waypoint', [29.15198, -81.01659],
+#                 'dock', [29.1519, -81.0162],
+#                 'coursemarker_1', [29.15173, -81.01675],
+#                 'coursemarker_2', [29.15198, -81.01695],
+#                 'coursemarker_3', [29.15217, -81.01649],
+#                 'coursemarker_4', [29.15195, -81.01633]},
+#           'C': {'speedgate_waypoint', [29.15154, -81.01610],
+#                 'autodocking_waypoint ', [29.15125, -81.01597],
+#                 'findthepath_waypoint ', [29.15137, -81.01626],
+#                 'raisetheflag_waypoint ', [29.15133, -81.01613],
+#                 'dock', [29.1519, -81.0162],
+#                 'coursemarker_1', [29.15098, -81.01620],
+#                 'coursemarker_2', [29.15139, -81.01637],
+#                 'coursemarker_3', [29.15165, -81.01608],
+#                 'coursemarker_4', [29.15123, -81.01585]}}
 
 # TODO: Update this to match Saturday's successful run
 autonav_waypoints = [[(10, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
                      [(10, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
-                     [(10, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)]}
+                     [(10, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)]]
 
 speedgate_waypoints = [[(15, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
                        [(15, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
@@ -72,7 +77,9 @@ speedgate_waypoints = [[(15, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
                        [(15, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
                        [(15, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)]]
                        
-# TODO: Add base_link framed waypoint lists for the other tasks
+findthepath_waypoints = [[(2, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)],
+                         [(1, 0.0, 0.0), (0.0, 0.0, 0.0, -1.0)],
+                         [(2, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0)]]
 
 
 class NavigationSupervisor():
@@ -90,8 +97,8 @@ class NavigationSupervisor():
         
         # Define a start position. It should get updated in the /fix callback
         # as soon as GPS data is published
-        self.current_latitude = course['A']['dock'][0]
-        self.current_longitude = course['A']['dock'][1] 
+        self.current_latitude = 29.1513 # course['A']['dock'][0]
+        self.current_longitude = -81.0175 #course['A']['dock'][1] 
         
         # Tolerance on GPS based waypoint to consider it reached
         self.distance_tolerance = 1.0  # meters
@@ -308,7 +315,7 @@ class NavigationSupervisor():
           course_letter : a string representation the course letter the trial is on
         """
         
-        goal_position = course['course_letter']['dock']
+        goal_position = (29.1513, -81.0175) #course['course_letter']['dock']
             
         self.go_to_GPS_location(goal_position)
         
@@ -320,10 +327,10 @@ class NavigationSupervisor():
           course_letter : a string representation the course letter the trial is on
         """
         
-        goal_position = course['course_letter']['speedgate_waypoint']
+        goal_position = (29.15166, -81.01732) #course['course_letter']['speedgate_waypoint']
         
         if course_letter == 'A':
-            heading = course['course_letter']['speedgate_heading']
+            heading = 330 # course['course_letter']['speedgate_heading']
         else:
             heading = None
             
@@ -349,7 +356,7 @@ class NavigationSupervisor():
           course_letter : a string representation the course letter the trial is on
         """
         
-        goal_position = course['course_letter']['findthepath_waypoint']
+        goal_position = (29.15148, -81.01705) #course['course_letter']['findthepath_waypoint']
             
         self.go_to_GPS_location(goal_position)
 
@@ -381,14 +388,14 @@ class NavigationSupervisor():
                                format
         """
         
-        for pose in waypoint_post_list:   
+        for pose in waypoint_pos_list:   
             goal = self.form_goal_pose(pose)
             
             rospy.loginfo('Sending goal {}'.format(pose))
             self.client.send_goal(goal)
 
             # Check the current state
-            state = self.move_base.get_state()
+            state = self.client.get_state()
             
             # TODO: Add timeout to this loop
             while state != GoalStatus.SUCCEEDED:
@@ -400,7 +407,7 @@ class NavigationSupervisor():
                 # client.wait_for_result(rospy.Duration(1.0))
             
                 # Check the current state
-                state = self.move_base.get_state()
+                state = self.client.get_state()
                 
             rospy.loginfo("Goal succeeded!")
 
@@ -423,13 +430,23 @@ if __name__ == '__main__':
         
         # Now, move to the speed test using GPS coordinates
         rospy.loginfo('Moving to the speedgate GPS location')
-        navigator.go_to_speedgate()
+        navigator.go_to_speedgate('A')
         
         # Then, do the speed test with local, base_link waypoints
         rospy.loginfo('Moving through speed gate task')
         navigator.go_through_waypoint_list(speedgate_waypoints)
 
-        # TODO: What else do you want to do?
+        # Now, move to the find the path task using GPS coordinates
+        rospy.loginfo('Moving to the speedgate GPS location')
+        navigator.go_to_findthepath('A')
+        
+        # Then, make a path through the obstacle with local, base_link waypoints
+        rospy.loginfo('Moving through find the path task')
+        navigator.go_through_waypoint_list(findthepath_waypoints)
+        
+        # Return to the dock
+        rospy.loginfo('Returning to the dock.')
+        navigator.go_to_dock('A')
 
     except (KeyboardInterrupt, SystemExit):
         # If we get a keyboard interrupt cancel the goal request and go back

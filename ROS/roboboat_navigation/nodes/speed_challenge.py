@@ -25,7 +25,9 @@ import rospy
 import actionlib
 import numpy as np
 
+from std_msgs.msg import String
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from actionlib_msgs.msg import *
 
 mode_pub = rospy.Publisher('/mode', String, queue_size=1, latch=True)
 
@@ -74,7 +76,7 @@ if __name__ == '__main__':
 
             # Check the current state
             # It should be
-            state = self.move_base.get_state()
+            state = client.get_state()
             
             while state != GoalStatus.SUCCEEDED:
                 # Wait one second

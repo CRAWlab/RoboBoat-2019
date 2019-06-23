@@ -41,7 +41,7 @@ from sensor_msgs.msg import NavSatFix
 import datetime
 
 # Change this address and port to match those provided by the technical direcotrs
-TD_IP_ADDRESS = 'robot.server'
+TD_IP_ADDRESS = 'ROBOT.SERVER'
 TD_PORT = 9000
 
 
