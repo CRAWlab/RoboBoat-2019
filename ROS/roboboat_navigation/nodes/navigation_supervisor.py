@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
 ###############################################################################
-# speed.py
+# navigation_supervisor.py
 #
-# Script to run the speed challenge at the 2019 RoboBoat contest
+# Script to run basic GPS-aided navigation at the 2019 RoboBoat contest
 #
 # NOTE: Any plotting is set up for output, not viewing on screen.
 #       So, it will likely be ugly on screen. The saved PDFs should look
 #       better.
 #
-# Created: 06/22/19
+# Created: 06/23/19
 #   - Joshua Vaughan
 #   - joshua.vaughan@louisiana.edu
 #   - http://www.ucs.louisiana.edu/~jev9637
