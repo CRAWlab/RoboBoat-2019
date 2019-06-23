@@ -1,0 +1,30 @@
+# Course A
+taskname_waypoint
+speedgate_waypoint 29.15166, -81.01732
+autodocking_waypoint 29.15165, -81.01716
+findthepath_waypoint 29.15148, -81.01705
+raisetheflag_waypoint 29.15158, -81.01710
+coursemarker_1 29.15141, -81.01679
+coursemarker_2 29.15181, -81.01714
+coursemarker_3 29.15164, -81.01740
+coursemarker_4 29.15136, -81.01731
+
+# Course B
+speedgate_waypoint 29.15195, -81.01638
+autodocking_waypoint  29.15208, -81.01660
+findthepath_waypoint  29.15182, -81.01672
+raisetheflag_waypoint  29.15198, -81.01659
+coursemarker_1  29.15173, -81.01675
+coursemarker_2  29.15198, -81.01695
+coursemarker_3  29.15217, -81.01649
+coursemarker_4  29.15195, -81.01633
+
+# Course C
+speedgate_waypoint 29.15154, -81.01610
+autodocking_waypoint  29.15125, -81.01597
+findthepath_waypoint  29.15137, -81.01626
+raisetheflag_waypoint  29.15133, -81.01613
+coursemarker_1 29.15098, -81.01620
+coursemarker_2 29.15139, -81.01637
+coursemarker_3 29.15165, -81.01608
+coursemarker_4 29.15123, -81.01585
