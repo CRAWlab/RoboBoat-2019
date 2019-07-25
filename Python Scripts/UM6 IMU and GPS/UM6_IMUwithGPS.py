@@ -957,7 +957,8 @@ if __name__ == '__main__':
 #                 Um6Drv.DATA_LINEAR_ACCEL | 
 #                 Um6Drv.DATA_GPS)
 
-    IMUport = '/dev/tty.usbserial-FTGSQ1XH'
+#     IMUport = '/dev/tty.usbserial-FTGSQ1XH'
+    IMUport = '/dev/tty.USA19H1a121P1.1'
     imu = IMU(IMUport)
 
     imu.setup_data_file()    

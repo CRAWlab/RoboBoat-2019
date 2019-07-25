@@ -122,14 +122,20 @@ The script a bash script:
 
     #!/bin/bash
 
-    cpu=$(</sys/class/thermal/thermal_zone0/temp)
+    while True
+        do
+            clear
+            cpu=$(</sys/class/thermal/thermal_zone0/temp)
 
-    echo ""
-    echo "$(date) @ $(hostname)"
-    echo "------------------------------"
-    echo "CPU: temp=$((cpu/1000))'C"
-    echo "GPU: $(/opt/vc/bin/vcgencmd measure_temp)"
-    echo ""
+            echo ""
+            echo "$(date) @ $(hostname)"
+            echo "------------------------------"
+            echo "CPU: temp=$((cpu/1000))'C"
+            echo "GPU: $(/opt/vc/bin/vcgencmd measure_temp)"
+            echo ""
+            
+	        sleep 1 
+	    done
 
 
 On the Raspberry Pi, it's saved in `/home/ubuntu/RoboBoat-2019/Python Scripts/Utility Scripts` as `pi_temp.sh` so, it can be run by first `cd`-ing to the proper directory:

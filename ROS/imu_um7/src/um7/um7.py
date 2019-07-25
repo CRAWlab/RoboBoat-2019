@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#! /usr/bin/env python
+
 """Module to interface with CH Robotics / Redshift Labs UM7 IMU
 """
 

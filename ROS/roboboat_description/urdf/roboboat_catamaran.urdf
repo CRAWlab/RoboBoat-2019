@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.0-0-g9aa0fdb  Build Version: 1.5.7004.21443
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="roboboat_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-1.95768316403313E-06 -0.0960294818745979 8.1178858989982E-06"
+        rpy="0 0 0" />
+      <mass
+        value="114.745564008378" />
+      <inertia
+        ixx="11.8214743728554"
+        ixy="3.5443510166243E-05"
+        ixz="-2.191055428015E-06"
+        iyy="12.9325090091219"
+        iyz="-3.15638425965038E-05"
+        izz="1.72764158794305" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Catamaran Hull.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Catamaran Hull.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="Propulsion">
+    <inertial>
+      <origin
+        xyz="0.418836784923921 0.00319240782618824 -0.0290252845776875"
+        rpy="0 0 0" />
+      <mass
+        value="0.82694868624574" />
+      <inertia
+        ixx="0.000650713061219615"
+        ixy="5.14285699816352E-07"
+        ixz="2.20336060495654E-05"
+        iyy="0.000560043760303204"
+        iyz="-1.62791141887144E-07"
+        izz="0.000650706466950308" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Propulsion.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Propulsion.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="X-Configuration"
+    type="fixed">
+    <origin
+      xyz="0.27569 0.32286 -0.29202"
+      rpy="1.5708 0 -2.3562" />
+    <parent
+      link="Catamaran Hull" />
+    <child
+      link="Propulsion" />
+    <axis
+      xyz="0 0 0" />
+    <safety_controller
+      k_velocity="0" />
+  </joint>
+  <link
+    name="Control Box">
+    <inertial>
+      <origin
+        xyz="0.00759593945170904 0.0777453088199749 -0.0134690611002227"
+        rpy="0 0 0" />
+      <mass
+        value="6.53856274805691" />
+      <inertia
+        ixx="0.0597641549295015"
+        ixy="1.60270937654843E-06"
+        ixz="1.85490496754483E-05"
+        iyy="0.194516351817932"
+        iyz="4.06382400685037E-05"
+        izz="0.151206890727245" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Control Box.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Control Box.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Electrical Components"
+    type="fixed">
+    <origin
+      xyz="0 0 0.01524"
+      rpy="1.5708 0 0" />
+    <parent
+      link="Catamaran Hull" />
+    <child
+      link="Control Box" />
+    <axis
+      xyz="0 0 0" />
+    <safety_controller
+      k_velocity="0" />
+  </joint>
+  <link
+    name="Accessories">
+    <inertial>
+      <origin
+        xyz="-0.038586522085892 0.089624423703849 -0.238454875323926"
+        rpy="0 0 0" />
+      <mass
+        value="3.4238585040808" />
+      <inertia
+        ixx="0.00974514972046044"
+        ixy="1.81290345913442E-08"
+        ixz="-2.18249825158682E-07"
+        iyy="0.0148325213130713"
+        iyz="-3.50930326989731E-06"
+        izz="0.011040495880357" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Accessories.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roboboat_description/meshes/Accessories.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="Structural and Rugged Components"
+    type="fixed">
+    <origin
+      xyz="0 0.254 0"
+      rpy="1.5708 0 3.1416" />
+    <parent
+      link="Catamaran Hull" />
+    <child
+      link="Accessories" />
+    <axis
+      xyz="0 0 0" />
+    <safety_controller
+      k_velocity="0" />
+  </joint>
+</robot>

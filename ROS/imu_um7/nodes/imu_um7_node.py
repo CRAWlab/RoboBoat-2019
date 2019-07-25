@@ -53,6 +53,7 @@ from geometry_msgs.msg import Vector3Stamped
 # Use the ROS quaternion transformations
 from tf.transformations import quaternion_multiply
 from tf.transformations import quaternion_about_axis
+from tf.transformations import quaternion_from_euler
 
 GRAVITY = 9.81
 
@@ -69,7 +70,7 @@ class ImuUm7Node(object):
         self.port = rospy.get_param('~port', default_port)
         self.frame_id = rospy.get_param('~frame_id', "/imu")
         self.gps_frame_id = rospy.get_param('~gps_frame_id', "/gps")
-        self.throttle_rate = rospy.get_param('~throttle_rate', 5000)
+        self.throttle_rate = rospy.get_param('~throttle_rate', 10000)
         self.reset_mag = rospy.get_param('~reset_mag', False)
         self.reset_accel = rospy.get_param('~reset_accel', False)
         self.mag_zero_x = rospy.get_param('~mag_zero_x', False)
@@ -220,7 +221,7 @@ class ImuUm7Node(object):
         while not rospy.is_shutdown():
             now = rospy.Time.now()
 
-            if (now.to_sec() - self.imu_data.header.stamp.to_sec())*self.throttle_rate < 1.:
+            if (now.to_sec() - self.imu_data.header.stamp.to_sec())*self.throttle_rate < 1.0:
                 # Ignore data at this rate (ok for a boat)
                 return
             else:
